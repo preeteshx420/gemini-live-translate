@@ -2,42 +2,92 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  LiveKitRoom,
-  RoomAudioRenderer,
-  StartAudio,
-} from "@livekit/components-react";
+import { useUser } from "@clerk/nextjs";
+import { LiveKitRoom } from "@livekit/components-react";
 import "@livekit/components-styles";
 import InCall from "./InCall";
 
-const STORAGE_KEY_NAME = "lt.displayName";
-const STORAGE_KEY_LANG = "lt.lang";
+const STORAGE_KEY_NAME     = "lt.displayName";
+const STORAGE_KEY_LANG     = "lt.lang";
+const STORAGE_KEY_GUEST_ID = "lt.guestId";
 
 interface TokenResponse {
   token: string;
   serverUrl: string;
 }
 
+/**
+ * Decode the public session ID back to the LiveKit room name.
+ *
+ * Encoding (done in page.tsx):
+ *   roomName  = "jesse@company.com-a3f9b2"
+ *   sessionId = base64url(roomName) → "amVzc2VAY29tcGFueS5jb20tYTNmOWIy"
+ *
+ * Decoding here:
+ *   base64url → base64 → roomName
+ */
+function decodeSessionId(sessionId: string): string {
+  try {
+    const base64 = sessionId
+      .replace(/-/g, "+")
+      .replace(/_/g, "/")
+      .padEnd(sessionId.length + ((4 - (sessionId.length % 4)) % 4), "=");
+    return atob(base64);
+  } catch {
+    // If decoding fails (e.g. legacy UUID room), use as-is
+    return sessionId;
+  }
+}
+
+/**
+ * Generate (or reuse) a stable guest ID for this browser session.
+ * Stored in sessionStorage so the same tab keeps the same identity on
+ * reconnect, but a new tab / new browser gets a fresh one.
+ */
+function getOrCreateGuestId(): string {
+  const existing = window.sessionStorage.getItem(STORAGE_KEY_GUEST_ID);
+  if (existing) return existing;
+  const id = "guest-" + Math.random().toString(36).slice(2, 10);
+  window.sessionStorage.setItem(STORAGE_KEY_GUEST_ID, id);
+  return id;
+}
+
 export default function RoomClient({ sessionId }: { sessionId: string }) {
   const router = useRouter();
-  const [token, setToken] = useState<string | null>(null);
-  const [serverUrl, setServerUrl] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [identity] = useState(() =>
-    typeof crypto !== "undefined" && crypto.randomUUID
-      ? `peer-${crypto.randomUUID().slice(0, 8)}`
-      : `peer-${Math.random().toString(36).slice(2, 10)}`,
-  );
+  // useUser() is still imported so signed-in users get a stable Clerk identity.
+  // Guests (not signed in) get a "guest-XXXXXXXX" identity instead.
+  // No auth redirect here — anyone with the link can join.
+  const { user, isLoaded } = useUser();
+
+  const [token, setToken]             = useState<string | null>(null);
+  const [serverUrl, setServerUrl]     = useState<string | null>(null);
+  const [error, setError]             = useState<string | null>(null);
   const [displayName, setDisplayName] = useState<string>("");
   const [initialLang, setInitialLang] = useState<string>("en");
+  const [identity, setIdentity]       = useState<string | null>(null);
 
-  // Pull name + lang chosen in the pre-flight screen. If missing, send the
-  // user back to the pre-flight so they can pick.
+  // The LiveKit room name is the base64-decoded session ID
+  const liveKitRoom = decodeSessionId(sessionId);
+
+  // Resolve identity once Clerk has finished loading:
+  //   - Signed-in users  → stable Clerk user.id
+  //   - Guests           → "guest-XXXXXXXX" (persisted in sessionStorage)
+  useEffect(() => {
+    if (!isLoaded) return;
+    if (user) {
+      setIdentity(user.id);
+    } else {
+      setIdentity(getOrCreateGuestId());
+    }
+  }, [isLoaded, user]);
+
+  // Pull name + lang chosen on the pre-flight screen
   useEffect(() => {
     if (typeof window === "undefined") return;
     const name = window.sessionStorage.getItem(STORAGE_KEY_NAME);
     const lang = window.sessionStorage.getItem(STORAGE_KEY_LANG);
     if (!name || !lang) {
+      // No pre-flight data — send back to the join page
       router.replace(`/session/${sessionId}`);
       return;
     }
@@ -45,12 +95,16 @@ export default function RoomClient({ sessionId }: { sessionId: string }) {
     setInitialLang(lang);
   }, [router, sessionId]);
 
-  // Mint a LiveKit token.
+  // Mint a LiveKit token once we have identity + displayName
   useEffect(() => {
-    if (!displayName) return;
-    const url = `/api/token?room=${encodeURIComponent(
-      sessionId,
-    )}&identity=${encodeURIComponent(identity)}&name=${encodeURIComponent(displayName)}`;
+    if (!identity || !displayName) return;
+
+    const url =
+      `/api/token` +
+      `?room=${encodeURIComponent(liveKitRoom)}` +
+      `&identity=${encodeURIComponent(identity)}` +
+      `&name=${encodeURIComponent(displayName)}`;
+
     fetch(url)
       .then(async (res) => {
         if (!res.ok) {
@@ -64,7 +118,7 @@ export default function RoomClient({ sessionId }: { sessionId: string }) {
         setServerUrl(data.serverUrl);
       })
       .catch((err) => setError(err.message));
-  }, [sessionId, identity, displayName]);
+  }, [liveKitRoom, identity, displayName]);
 
   function handleLeave() {
     router.push("/");
@@ -103,31 +157,15 @@ export default function RoomClient({ sessionId }: { sessionId: string }) {
     <LiveKitRoom
       token={token}
       serverUrl={serverUrl}
-      // Camera + mic default OFF (grill Q12); user opts in via the control bar.
       video={false}
       audio={false}
       connect={true}
       onDisconnected={handleLeave}
       data-lk-theme="default"
-      style={{ height: "100vh", background: "var(--bg)" }}
+      style={{ height: "100dvh", minHeight: "-webkit-fill-available", background: "var(--bg)", overflow: "hidden" }}
     >
+      {/* InCall renders RoomAudioRenderer internally — no need to add it here. */}
       <InCall initialLang={initialLang} onLeave={handleLeave} />
-      <RoomAudioRenderer />
-      {/* Browsers block audio playback until a user gesture. A listener whose
-          mic stays off never triggers that gesture, so inbound translation
-          audio would silently never play. StartAudio renders only while
-          playback is blocked and calls room.startAudio() on click. */}
-      <StartAudio
-        label="🔊 Tap to enable translated audio"
-        className="btn"
-        style={{
-          position: "fixed",
-          left: "50%",
-          bottom: 96,
-          transform: "translateX(-50%)",
-          zIndex: 1000,
-        }}
-      />
     </LiveKitRoom>
   );
 }

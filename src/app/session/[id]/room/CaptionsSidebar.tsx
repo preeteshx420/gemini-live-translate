@@ -115,7 +115,7 @@ export default function CaptionsSidebar({
       <div className="captions-inner">
         <div className="captions-header">
           <span>
-            Captions {myLangInfo && `· ${myLangInfo.flag} ${myLangInfo.name}`}
+            Captions {myLangInfo && `· ${myLangInfo.name}`}
           </span>
           <button
             className="captions-close"

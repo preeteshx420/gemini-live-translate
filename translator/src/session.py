@@ -1,11 +1,11 @@
 """One bidirectional Gemini Live session bridging a speaker to a target language.
 
-We talk to Gemini Live via a raw WebSocket against the v1beta BidiGenerateContent
-endpoint rather than via google-genai's `client.aio.live.connect()`. The v1beta
-API expects `translationConfig` nested under `generationConfig` (renamed from the
-EAP-era `streamingTranslationConfig` at the public launch). Bypassing the SDK lets
-us control the exact JSON shape; python-genai >= 2.8.0 now exposes a matching
-`TranslationConfig` if we later choose to adopt the SDK.
+We talk to Gemini Live via a raw WebSocket against the AI Studio v1beta
+BidiGenerateContent endpoint authenticated with a Gemini API key.
+
+The translate model (gemini-3.5-live-translate-preview) is ONLY available on
+the AI Studio endpoint (generativelanguage.googleapis.com) with API key auth.
+It does not exist on Vertex AI. Set GEMINI_API_KEY in translator/.env.local.
 """
 
 from __future__ import annotations
@@ -26,15 +26,10 @@ from config import (
     GEMINI_MAX_FAILURES_BEFORE_LONG_BACKOFF,
     GEMINI_MODEL,
     GEMINI_RECONNECT_BACKOFF_SEC,
+    GEMINI_WS_URL,
 )
 
 logger = logging.getLogger("translator.session")
-
-
-GEMINI_WS_URL = (
-    "wss://generativelanguage.googleapis.com/ws/"
-    "google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent"
-)
 
 
 class GeminiSession:
@@ -181,7 +176,10 @@ class GeminiSession:
         url = f"{GEMINI_WS_URL}?key={self._gemini_api_key}"
         # Max payload size: enough to cover ~1s of 48 kHz 16-bit PCM in base64.
         async with websockets.connect(
-            url, max_size=2**22, ping_interval=20, ping_timeout=20
+            url,
+            max_size=2**22,
+            ping_interval=20,
+            ping_timeout=20,
         ) as ws:
             await ws.send(json.dumps(self._build_setup_payload()))
             logger.info(
@@ -211,8 +209,7 @@ class GeminiSession:
 
     def _build_setup_payload(self) -> dict:
         """The first WS message — must match the v1beta BidiGenerateContent setup
-        schema. Field names use the exact camelCase the API expects (verified
-        against the previous Node implementation that worked in production)."""
+        schema. Field names use the exact camelCase the API expects."""
         return {
             "setup": {
                 "model": f"models/{GEMINI_MODEL}",

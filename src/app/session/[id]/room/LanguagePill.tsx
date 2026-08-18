@@ -15,9 +15,6 @@ export default function LanguagePill({
   return (
     <label className="lang-pill">
       <span className="lang-pill-prefix">Lang</span>
-      <span className="lang-pill-flag" aria-hidden>
-        {current?.flag ?? "🌐"}
-      </span>
       <span className="lang-pill-name">{current?.name ?? "Pick language"}</span>
       <span className="lang-pill-chevron" aria-hidden>
         <ChevronDownIcon />
@@ -30,7 +27,7 @@ export default function LanguagePill({
       >
         {PICKER_LANGUAGES.map((l) => (
           <option key={l.code} value={l.code}>
-            {l.flag} {l.name}
+            {l.name}
           </option>
         ))}
       </select>
