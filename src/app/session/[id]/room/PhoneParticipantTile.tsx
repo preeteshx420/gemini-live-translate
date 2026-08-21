@@ -39,9 +39,12 @@ export default function PhoneParticipantTile({
   const lang     = participant.attributes?.[PARTICIPANT_LANG_ATTR];
   const langInfo = lang ? getLanguageByCode(lang) : undefined;
 
-  // Strip the "📞 " prefix that the SIP invite route adds to the name
-  const rawName     = participant.name || participant.identity;
-  const displayName = rawName.replace(/^📞\s*/, "").trim() || participant.identity;
+  // Fall-back chain: p.name → strip "sip_" prefix from identity → raw identity.
+  // Also strip any legacy "📞 " prefix from names set before the emoji removal fix.
+  const displayName = (
+    participant.name.trim() ||
+    participant.identity.replace(/^sip_/i, "")
+  ).replace(/^📞\s*/, "").trim() || participant.identity;
 
   // Ref used only for potential future focus / a11y needs
   const tileRef = useRef<HTMLDivElement>(null);
