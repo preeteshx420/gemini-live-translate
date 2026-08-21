@@ -207,9 +207,13 @@ function ParticipantRow({
     }
   }, [identity, isSip, roomName, onRemoved]);
 
-  // Strip any legacy "📞 " prefix from SIP participant names set before this fix
-  const rawName = name || identity;
-  const displayName = isSip ? rawName.replace(/^📞\s*/, "") : rawName;
+  // For SIP participants, LiveKit sometimes doesn't propagate participantName
+  // back to p.name on the RemoteParticipant object — it arrives as "".
+  // Fall back chain: p.name → strip "sip_" prefix from identity → raw identity.
+  // Also strip any legacy "📞 " prefix that was set before this fix.
+  const rawName = isSip
+    ? (name.trim() || identity.replace(/^sip_/i, "")).replace(/^📞\s*/, "")
+    : (name || identity);
 
   return (
     <div className={`pp-row${actionState === "done" ? " pp-row--leaving" : ""}`}>
@@ -233,7 +237,7 @@ function ParticipantRow({
 
       <div className="pp-info">
         <span className="pp-name">
-          {displayName}
+          {rawName}
           {isSelf && <span className="pp-you-badge"> (You)</span>}
         </span>
         {langInfo && (
@@ -250,7 +254,7 @@ function ParticipantRow({
       {keypadOpen && localParticipant && isSip && (
         <DtmfKeypad
           localParticipant={localParticipant}
-          callerName={name || identity}
+          callerName={rawName}
           onClose={() => setKeypadOpen(false)}
         />
       )}
