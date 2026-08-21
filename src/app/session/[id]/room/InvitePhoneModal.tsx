@@ -16,7 +16,15 @@
  */
 
 import { useCallback, useState } from "react";
-import { PICKER_LANGUAGES } from "@/lib/languages";
+import { PICKER_LANGUAGES, NATIVE_OPTION } from "@/lib/languages";
+import { NATIVE_LANG } from "@/lib/config";
+
+// "No translation" first, then all real languages — for the phone modal only.
+// A phone caller with lang="none" hears the room audio without any translation.
+const PHONE_LANGUAGES = [
+  NATIVE_OPTION,
+  ...PICKER_LANGUAGES.filter((l) => l.code !== NATIVE_LANG),
+];
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -218,9 +226,11 @@ export default function InvitePhoneModal({
                 disabled={busy}
                 aria-label={`Language for caller ${idx + 1}`}
               >
-                {PICKER_LANGUAGES.filter((l) => l.code !== "none").map((l) => (
+                {PHONE_LANGUAGES.map((l) => (
                   <option key={l.code} value={l.code}>
-                    {l.flag} {l.name}
+                    {l.code === "none"
+                      ? "👂 No translation (plain call)"
+                      : `${l.flag} ${l.name}`}
                   </option>
                 ))}
               </select>
