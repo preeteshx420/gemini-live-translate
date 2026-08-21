@@ -50,30 +50,25 @@ export async function POST(req: NextRequest) {
   }
 
   // 3. Validate via LiveKit SIP API
+  // SDK v2.15.3 has no getSipOutboundTrunk — use listSipOutboundTrunk and
+  // match by sipTrunkId field. An empty list or no match → invalid.
   try {
     const { apiKey, apiSecret, serverUrl } = getCredentials();
     const sipClient = new SipClient(serverUrl, apiKey, apiSecret);
-    const trunk = await sipClient.getSipOutboundTrunk(trunkId.trim());
+    const trunks = await sipClient.listSipOutboundTrunk();
 
-    // If getSipOutboundTrunk didn't throw, the trunk exists
-    return NextResponse.json({
-      valid: true,
-      name: trunk.name ?? undefined,
-    });
-  } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : String(err);
-
-    // 404-class errors mean the trunk ID doesn't exist or isn't accessible
-    if (
-      message.includes("not found") ||
-      message.includes("404") ||
-      message.includes("does not exist")
-    ) {
+    const matched = trunks.find((t) => t.sipTrunkId === trunkId.trim());
+    if (!matched) {
       return NextResponse.json({ valid: false });
     }
 
-    // Unexpected server/network error
-    console.error("[user/verify-sip-trunk] getSipOutboundTrunk error:", message);
+    return NextResponse.json({
+      valid: true,
+      name: matched.name ?? undefined,
+    });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.error("[user/verify-sip-trunk] listSipOutboundTrunk error:", message);
     return NextResponse.json(
       { error: "Verification failed — please try again", detail: message },
       { status: 500 },
