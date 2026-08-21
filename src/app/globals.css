@@ -2716,11 +2716,15 @@ input.select-field {
 }
 
 .pp-avatar {
-  font-size: 17px;
-  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
   width: 28px;
-  text-align: center;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--lk-bg3, rgba(255,255,255,0.08));
+  color: var(--lk-fg3, rgba(255,255,255,0.6));
 }
 
 .pp-info {

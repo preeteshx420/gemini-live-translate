@@ -207,12 +207,29 @@ function ParticipantRow({
     }
   }, [identity, isSip, roomName, onRemoved]);
 
-  const avatar = isSip ? "📞" : "👤";
-  const displayName = name || identity;
+  // Strip any legacy "📞 " prefix from SIP participant names set before this fix
+  const rawName = name || identity;
+  const displayName = isSip ? rawName.replace(/^📞\s*/, "") : rawName;
 
   return (
     <div className={`pp-row${actionState === "done" ? " pp-row--leaving" : ""}`}>
-      <span className="pp-avatar" aria-hidden>{avatar}</span>
+      <span className="pp-avatar" aria-hidden>
+        {isSip ? (
+          /* Phone / SIP participant icon */
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden>
+            <path
+              d="M6.62 10.79a15.053 15.053 0 0 0 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1C10.61 21 3 13.39 3 4c0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"
+              fill="currentColor"
+            />
+          </svg>
+        ) : (
+          /* Web participant person icon */
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden>
+            <circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="1.8"/>
+            <path d="M4 20v-1a8 8 0 0 1 16 0v1" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+          </svg>
+        )}
+      </span>
 
       <div className="pp-info">
         <span className="pp-name">

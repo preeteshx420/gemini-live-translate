@@ -98,7 +98,7 @@ export async function POST(req: NextRequest) {
 
     await sipClient.createSipParticipant(trunkId, phone, room, {
       participantIdentity:    sipIdentity,
-      participantName:        `📞 ${phone}`,
+      participantName:        phone,
       participantAttributes:  { [PARTICIPANT_LANG_ATTR]: lang },
       playDialtone:           true,
       waitUntilAnswered:      false,  // don't block the HTTP response waiting for pickup
