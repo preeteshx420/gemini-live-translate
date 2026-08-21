@@ -75,6 +75,11 @@ export function useTranslationRouting(myLang: string) {
       [RoomEvent.ParticipantAttributesChanged, apply],
       [RoomEvent.TrackPublished, apply],
       [RoomEvent.TrackUnpublished, apply],
+      // TrackSubscribed fires AFTER LiveKit auto-subscribes a track.
+      // Without this, the pre-emptive setSubscribed(false) call at TrackPublished
+      // time is skipped (isSubscribed is still false then), and the track leaks
+      // through — e.g. iPhone hears its own voice translated to Korean.
+      [RoomEvent.TrackSubscribed, apply],
       [RoomEvent.LocalTrackPublished, apply],
     ];
     for (const [event, handler] of handlers) {
@@ -124,7 +129,11 @@ function applyAgentSubscriptions(
 }
 
 function setSubscribed(pub: RemoteTrackPublication, desired: boolean) {
-  if (pub.isSubscribed !== desired) {
-    pub.setSubscribed(desired);
-  }
+  // Always call setSubscribed — do NOT guard with isSubscribed !== desired.
+  // At RoomEvent.TrackPublished time pub.isSubscribed is still false even when
+  // we want desired=false (block the track). The guard would short-circuit and
+  // skip the call, letting LiveKit's autoSubscribe deliver the track unchecked.
+  // Calling setSubscribed(false) unconditionally pre-empts the auto-subscribe.
+  // LiveKit deduplicates redundant calls internally so this is safe.
+  pub.setSubscribed(desired);
 }

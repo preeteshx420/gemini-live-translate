@@ -4,7 +4,16 @@ from __future__ import annotations
 
 # --- Gemini Live ---
 
+# AI Studio model — gemini-3.5-live-translate-preview is ONLY available on the
+# AI Studio endpoint, not on Vertex AI. Auth uses ADC Bearer token (no API key).
 GEMINI_MODEL = "gemini-3.5-live-translate-preview"
+
+# AI Studio WebSocket endpoint — supports Bearer token auth via ADC.
+# Requires scopes: cloud-platform + generative-language (see session.py).
+GEMINI_WS_URL = (
+    "wss://generativelanguage.googleapis.com/ws/"
+    "google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent"
+)
 
 # Gemini Live API audio formats.
 GEMINI_INPUT_SAMPLE_RATE = 16000  # Gemini expects 16kHz mono PCM in

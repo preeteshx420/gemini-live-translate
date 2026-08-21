@@ -2,30 +2,30 @@
 
 :root {
   --font-display: 'Instrument Serif', Georgia, serif;
-  --font-body: 'DM Sans', system-ui, sans-serif;
-  --font-mono: 'DM Mono', 'SF Mono', monospace;
+  --font-body:    'DM Sans', system-ui, sans-serif;
+  --font-mono:    'DM Mono', 'SF Mono', monospace;
 
-  --bg: #F6F4F0;
-  --bg-elevated: #EDEAE4;
-  --bg-inset: #E5E2DB;
+  --bg:           #F6F4F0;
+  --bg-elevated:  #EDEAE4;
+  --bg-inset:     #E5E2DB;
 
-  --fg: #1A1917;
+  --fg:           #1A1917;
   --fg-secondary: #6B6860;
-  --fg-tertiary: #9C9890;
-  --fg-ghost: #C4C0B8;
+  --fg-tertiary:  #9C9890;
+  --fg-ghost:     #C4C0B8;
 
-  --accent: #C8432B;
-  --accent-soft: rgba(200, 67, 43, 0.08);
+  --accent:       #C8432B;
+  --accent-soft:  rgba(200, 67, 43, 0.07);
 
-  --border: #DAD7D0;
+  --border:       #DAD7D0;
   --border-light: #EDEAE4;
 
-  --success: #2D7D46;
+  --success:      #2D7D46;
   --success-soft: rgba(45, 125, 70, 0.08);
-  --warning: #A07B1A;
+  --warning:      #A07B1A;
   --warning-soft: rgba(160, 123, 26, 0.08);
-  --error: #B33A2D;
-  --error-soft: rgba(179, 58, 45, 0.08);
+  --error:        #B33A2D;
+  --error-soft:   rgba(179, 58, 45, 0.08);
 }
 
 *,
@@ -130,10 +130,6 @@ body {
   color: var(--fg-tertiary);
 }
 
-.italic {
-  font-style: italic;
-}
-
 /* ——————————————————————————————————————
    Separator
    —————————————————————————————————————— */
@@ -161,14 +157,14 @@ body {
   font-weight: 500;
   border: none;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
   text-decoration: none;
+  border-radius: 0;
 }
 
 .btn-dark {
   background: var(--fg);
   color: var(--bg);
-  border-radius: 0;
 }
 
 .btn-dark:hover {
@@ -184,7 +180,6 @@ body {
   background: transparent;
   color: var(--fg);
   border: 1px solid var(--border);
-  border-radius: 0;
 }
 
 .btn-outline:hover {
@@ -207,13 +202,12 @@ body {
   background: transparent;
   color: var(--error);
   border: 1px solid var(--error);
-  border-radius: 0;
   padding: 12px 24px;
   font-family: var(--font-body);
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background 0.15s ease;
 }
 
 .btn-danger:hover {
@@ -234,14 +228,15 @@ body {
 }
 
 /* ——————————————————————————————————————
-   Select
+   Select / Input
    —————————————————————————————————————— */
 
 .select-field {
   width: 100%;
-  padding: 14px 40px 14px 16px;
+  padding: 13px 40px 13px 16px;
   font-family: var(--font-body);
-  font-size: 14px;
+  /* 16px minimum prevents iOS Safari from auto-zooming on focus */
+  font-size: 16px;
   color: var(--fg);
   background: var(--bg);
   border: 1px solid var(--border);
@@ -251,7 +246,7 @@ body {
   background-repeat: no-repeat;
   background-position: right 16px center;
   cursor: pointer;
-  transition: border-color 0.2s ease;
+  transition: border-color 0.15s ease;
 }
 
 .select-field:hover {
@@ -264,12 +259,17 @@ body {
 }
 
 .select-field option {
-  font-family: var(--font-body);
   background: var(--bg);
+  color: var(--fg);
+}
+
+input.select-field {
+  background-image: none;
+  padding-right: 16px;
 }
 
 /* ——————————————————————————————————————
-   Status
+   Status indicators
    —————————————————————————————————————— */
 
 .status {
@@ -286,31 +286,24 @@ body {
   height: 6px;
   border-radius: 50%;
   background: currentColor;
+  flex-shrink: 0;
 }
 
 .status-dot.pulse {
   animation: pulse 2.5s ease-in-out infinite;
 }
 
-.status--active {
-  color: var(--success);
-}
-
-.status--waiting {
-  color: var(--warning);
-}
-
-.status--error {
-  color: var(--error);
-}
+.status--active  { color: var(--success); }
+.status--waiting { color: var(--warning); }
+.status--error   { color: var(--error); }
 
 @keyframes pulse {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
+  50%       { opacity: 0.3; }
 }
 
 /* ——————————————————————————————————————
-   Audio indicator — minimal waveform
+   Audio waveform
    —————————————————————————————————————— */
 
 .waveform {
@@ -340,7 +333,7 @@ body {
 
 @keyframes wave {
   0%, 100% { height: 4px; }
-  50% { height: 28px; }
+  50%       { height: 28px; }
 }
 
 .waveform.idle .waveform-bar {
@@ -361,7 +354,7 @@ body {
 }
 
 /* ——————————————————————————————————————
-   Translation list
+   Language list rows
    —————————————————————————————————————— */
 
 .lang-row {
@@ -372,9 +365,7 @@ body {
   border-bottom: 1px solid var(--border-light);
 }
 
-.lang-row:last-child {
-  border-bottom: none;
-}
+.lang-row:last-child { border-bottom: none; }
 
 .lang-row-left {
   display: flex;
@@ -402,16 +393,57 @@ body {
 }
 
 /* ——————————————————————————————————————
+   Language tags (landing page strip)
+   —————————————————————————————————————— */
+
+.lang-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.lang-tag {
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--fg-tertiary);
+  letter-spacing: 0.04em;
+}
+
+.lang-tag-more {
+  color: var(--fg-ghost);
+  border-color: var(--border-light);
+}
+
+/* ——————————————————————————————————————
+   Step list (landing page)
+   —————————————————————————————————————— */
+
+.step-number {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--fg-ghost);
+  letter-spacing: 0.02em;
+  flex-shrink: 0;
+  min-width: 28px;
+}
+
+/* ——————————————————————————————————————
    Spinner
    —————————————————————————————————————— */
 
 .spinner {
-  width: 18px;
-  height: 18px;
-  border: 1.5px solid var(--border);
-  border-top-color: var(--fg);
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid rgba(246, 244, 240, 0.3);
+  border-top-color: #F6F4F0;
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
+  display: inline-block;
+  flex-shrink: 0;
 }
 
 @keyframes spin {
@@ -419,342 +451,579 @@ body {
 }
 
 /* ——————————————————————————————————————
-   Entrance animation — very subtle
+   Entrance animations
    —————————————————————————————————————— */
 
 @keyframes enter {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-.enter { animation: enter 0.6s ease both; }
-.enter-d1 { animation: enter 0.6s ease 0.1s both; }
-.enter-d2 { animation: enter 0.6s ease 0.2s both; }
-.enter-d3 { animation: enter 0.6s ease 0.3s both; }
-.enter-d4 { animation: enter 0.6s ease 0.4s both; }
+.enter    { animation: enter 0.6s ease both; }
+.enter-d1 { animation: enter 0.6s ease 0.10s both; }
+.enter-d2 { animation: enter 0.6s ease 0.20s both; }
+.enter-d3 { animation: enter 0.6s ease 0.30s both; }
+.enter-d4 { animation: enter 0.6s ease 0.40s both; }
 
 /* ——————————————————————————————————————
-   Room — layout + chrome
+   Room shell
    —————————————————————————————————————— */
-
 .room-shell {
   position: relative;
-  height: 100vh;
+  height: 100vh;         /* fallback */
+  height: 100dvh;        /* dynamic vh: shrinks when mobile browser chrome appears */
   width: 100vw;
-  /* Flex row so the sidebar can animate as a pure width transition on a flex
-     child — the room flex:1 column reflows continuously. Grid-template-columns
-     with a 0fr -> length transition technically works but interpolates in
-     stepped chunks, which feels jarring. */
   display: flex;
   flex-direction: row;
   overflow: hidden;
-  background:
-    radial-gradient(
-      1200px 600px at 50% -20%,
-      rgba(200, 67, 43, 0.05),
-      transparent 70%
-    ),
-    var(--bg);
+  background: var(--bg);
 }
-
 .room {
   position: relative;
   flex: 1;
-  min-width: 0; /* let the flex item shrink below content's intrinsic width */
-  display: grid;
-  grid-template-rows: auto 1fr auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
   height: 100%;
+  overflow: hidden;
 }
 
+/* ── Header chrome ── */
 .room-chrome {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 18px 28px;
-  gap: 12px;
+  padding: 10px 16px;
+  gap: 8px;
   border-bottom: 1px solid var(--border-light);
+  flex-shrink: 0;
+  min-width: 0;
 }
-
 .chrome-meta {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   font-family: var(--font-mono);
   font-size: 12px;
   color: var(--fg-secondary);
-}
-
-.chrome-meta .divider {
-  color: var(--fg-ghost);
-}
-
-.room-stage {
-  position: relative;
-  overflow: hidden;
-  padding: 24px 28px;
-  display: flex;
-  flex-direction: column;
-}
-
-/* ——————————————————————————————————————
-   Tiles
-   —————————————————————————————————————— */
-
-.tile-grid {
   flex: 1;
-  display: grid;
-  gap: 16px;
-  align-content: center;
-  justify-content: center;
-  width: 100%;
-  margin: 0 auto;
-}
-
-.tile {
-  position: relative;
-  background: var(--bg-inset);
-  border: 1px solid var(--border);
+  min-width: 0;
   overflow: hidden;
-  aspect-ratio: 16 / 9;
-  width: 100%;
-  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.4s ease;
-  animation: tile-enter 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
-
-.tile-speaking {
-  border-color: var(--accent);
-  box-shadow:
-    inset 0 0 0 1px var(--accent),
-    0 0 0 4px rgba(200, 67, 43, 0.08);
+.chrome-meta .divider { color: var(--fg-ghost); flex-shrink: 0; }
+.chrome-participants { flex-shrink: 0; }
+.chrome-hearing {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-
-.tile-video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.tile-placeholder {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background:
-    repeating-linear-gradient(
-      45deg,
-      var(--bg-inset),
-      var(--bg-inset) 12px,
-      rgba(0, 0, 0, 0.015) 12px,
-      rgba(0, 0, 0, 0.015) 24px
-    );
-}
-
-.tile-placeholder-initial {
-  font-family: var(--font-display);
-  font-size: clamp(60px, 9vw, 120px);
-  color: var(--fg-ghost);
-  letter-spacing: -0.04em;
-}
-
-.tile-name {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  padding: 12px 14px;
-  background: linear-gradient(
-    to top,
-    rgba(26, 25, 23, 0.78) 0%,
-    rgba(26, 25, 23, 0.55) 50%,
-    transparent 100%
-  );
-  color: var(--bg);
-  font-family: var(--font-body);
-  font-size: 13px;
-  pointer-events: none;
-}
-
-.tile-name-text {
+.chrome-hearing strong {
+  color: var(--fg);
   font-weight: 500;
-  letter-spacing: 0.01em;
 }
-
-.tile-badge {
+/* Translation direction — e.g. "Spanish, French → English" */
+.chrome-direction {
   font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.04em;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 8px;
-  background: rgba(246, 244, 240, 0.12);
-  border: 1px solid rgba(246, 244, 240, 0.16);
-  color: var(--bg);
-}
-
-.tile-badge.connecting {
-  background: rgba(160, 123, 26, 0.25);
-  border-color: rgba(160, 123, 26, 0.45);
-}
-
-.tile-mic-off {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(26, 25, 23, 0.78);
-  color: var(--bg);
-}
-
-@keyframes tile-enter {
-  from {
-    opacity: 0;
-    transform: translateY(8px) scale(0.99);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-/* Speaking pulse — a faint outer halo. */
-@keyframes speak-pulse {
-  0%, 100% { box-shadow: inset 0 0 0 1px var(--accent), 0 0 0 4px rgba(200,67,43,0.06); }
-  50%      { box-shadow: inset 0 0 0 1px var(--accent), 0 0 0 8px rgba(200,67,43,0.12); }
-}
-
-.tile-speaking {
-  animation: tile-enter 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) both, speak-pulse 1.6s ease-in-out infinite;
-}
-
-/* ——————————————————————————————————————
-   Self-view
-   —————————————————————————————————————— */
-
-.self-view {
-  position: absolute;
-  bottom: 18px;
-  right: 18px;
-  width: 200px;
-  aspect-ratio: 16 / 9;
-  background: var(--bg-inset);
-  border: 1px solid var(--border);
-  overflow: hidden;
-  box-shadow: 0 8px 30px rgba(26, 25, 23, 0.12);
-  z-index: 5;
-  transition: transform 0.25s ease;
-}
-
-.self-view:hover {
-  transform: translateY(-2px);
-}
-
-.self-view-video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transform: scaleX(-1);
-}
-
-.self-view-empty {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  color: var(--fg-tertiary);
-  text-transform: uppercase;
-}
-
-/* ——————————————————————————————————————
-   Control bar
-   —————————————————————————————————————— */
-
-.control-bar {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 6px;
-  padding: 14px 24px;
-  border-top: 1px solid var(--border-light);
-  background: var(--bg);
-}
-
-.ctrl {
-  position: relative;
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  padding: 10px 16px;
-  min-width: 76px;
-  background: transparent;
+  font-size: 12px;
   color: var(--fg-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Right-side chrome actions (share + CC + lang pill) */
+.chrome-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+/* Small icon buttons in the header (Share, CC) */
+.chrome-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 10px;
+  background: transparent;
   border: 1px solid var(--border);
-  cursor: pointer;
+  color: var(--fg-secondary);
   font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.04em;
+  cursor: pointer;
   transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+  border-radius: 0;
+  white-space: nowrap;
 }
-
-.ctrl:hover {
+.chrome-icon-btn:hover {
   color: var(--fg);
   border-color: var(--fg-tertiary);
 }
-
-.ctrl--active {
-  background: var(--fg);
-  color: var(--bg);
-  border-color: var(--fg);
+.chrome-icon-btn--active {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-color: var(--accent);
 }
-
-.ctrl--active:hover {
-  color: var(--bg);
-  border-color: var(--fg);
+.chrome-icon-btn--active:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
 }
+.chrome-icon-btn-label { line-height: 1; }
 
-.ctrl--warning {
-  color: var(--warning);
-  border-color: rgba(160, 123, 26, 0.4);
+/* ——————————————————————————————————————
+   Room stage (video area)
+   —————————————————————————————————————— */
+/* room-stage fills the space between chrome header and bottom of .room */
+.room-stage {
+  position: relative;
+  overflow: hidden;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
 }
-
-.ctrl--warning:hover {
-  color: var(--warning);
-  border-color: var(--warning);
+/* lk-grid-layout-wrapper / lk-focus-layout-wrapper fill the stage above ControlBar */
+.lk-grid-layout-wrapper,
+.lk-focus-layout-wrapper {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
 }
-
-.ctrl-icon {
+/* ── Control row: ControlBar + End/Leave button in the same flex row ────────
+   The LiveKit ControlBar is flex itself and grows to fill available space.
+   EndCallButton is flex-shrink:0 so it never gets squashed.
+   On mobile the row stays in one line — the ControlBar buttons wrap internally
+   (LK handles that) while the EndCallButton stays anchored to the right end.
+   ────────────────────────────────────────────────────────────────────────── */
+.control-row {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 18px;
+  flex-wrap: nowrap;        /* desktop: single row */
+  gap: 4px;
+  flex-shrink: 0;
+  background: var(--lk-bg2, rgba(0, 0, 0, 0.55));
+  padding: 0 4px 0 0;
 }
 
-.ctrl-leave {
-  margin-left: 16px;
+/* ControlBar grows to fill available width */
+.control-row .lk-control-bar {
+  flex: 1;
+  min-width: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+/* End-call / Leave button — desktop: flush at right of bar */
+.control-row .end-call-btn,
+.control-row .leave-btn {
+  margin: 6px 4px 6px 0;
+  flex-shrink: 0;
+}
+
+/* ── Control row — mobile ≤640px ──────────────────────────────────────────── */
+/* On narrow phones (360px) 6 ControlBar buttons + End pill won't fit on one     */
+/* line. Wrap so End button drops to its own full-width row beneath the ControlBar. */
+@media (max-width: 640px) {
+  .control-row {
+    flex-wrap: wrap;        /* allow EndCallButton to drop to second line */
+    gap: 0;
+    padding: 0 0 env(safe-area-inset-bottom, 0px) 0;
+  }
+  /* ControlBar fills full width on the first line */
+  .control-row .lk-control-bar {
+    flex: 1 0 100%;         /* full width — own row */
+    justify-content: center;
+  }
+  /* End-call / Leave fills its own full-width second line */
+  .control-row .end-call-btn,
+  .control-row .leave-btn {
+    flex: 1 0 100%;         /* own row, full width */
+    margin: 0;
+    min-height: 48px;       /* proper touch target */
+    border-radius: 0;       /* flush edge-to-edge */
+    justify-content: center;
+    font-size: 14px;
+    padding: 12px 16px;
+  }
+}
+
+/* lk-carousel inside FocusLayoutContainer */
+.lk-carousel {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow-y: auto;
+  padding: 8px;
+}
+/* Ensure the LiveKitRoom host element fills the viewport */
+[data-lk-theme] {
+  height: 100%;
+}
+@keyframes tile-enter {
+  from { opacity: 0; transform: translateY(8px) scale(0.99); }
+  to   { opacity: 1; transform: none; }
+}
+/* Chat panel host
+   .room-chat-host is a position:fixed right-edge container.
+   When closed: width:0, overflow:hidden clips the lk-chat inside.
+   When open: width expands.
+
+   KEY: LK chat.css has @media(max-width:600px){ .lk-chat { position:fixed } }
+   position:fixed elements are NOT clipped by overflow:hidden on a parent.
+   So we MUST cancel that with !important on every position property to
+   keep the chat contained in our wrapper on mobile.
+   */
+.room-chat-host {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 0;
+  overflow: hidden;
+  z-index: 50;
+  pointer-events: none;
+}
+.room-chat-host--open {
+  width: clamp(200px, 55ch, 60ch);
+  pointer-events: auto;
+}
+
+/* LiveKit's built-in "Allow Audio" button — shown when canPlayAudio=false
+   (browser autoplay policy, common on Samsung Internet / Chrome Android).
+   Style it as a prominent overlay banner so the user sees it immediately
+   and taps it to unblock the AudioContext. Without this, Android/Samsung
+   users may hear nothing even though tracks are subscribed and arriving. */
+.lk-start-audio-button {
+  /* Override LK's default inline positioning so it floats prominently */
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  z-index: 9999 !important;
+  padding: 14px 28px !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  border-radius: 8px !important;
+  background: #0090ff !important;
+  color: #fff !important;
+  border: none !important;
+  cursor: pointer !important;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.5) !important;
+}
+
+/* Cancel LK's own position:fixed on lk-chat (both default + @media mobile rule).
+   Every property that the mobile media query touches must be !important. */
+.room-chat-host .lk-chat {
+  position: relative !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: auto !important;
+  width: 100% !important;
+  max-width: none !important;
+  height: 100% !important;
+  max-height: none !important;
+  border-left: 1px solid var(--lk-border-color) !important;
+}
+
+/* Settings backdrop + modal
+   Strategy: Our backdrop (z-index:100) is a flex container that centers
+   the modal card. We reset lk-settings-menu-modal's own position:fixed
+   so the flex centering takes over. This avoids the z-index fight between
+   two independently-positioned:fixed siblings.
+   */
+.room-settings-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+/* Reset lk-settings-menu-modal's built-in fixed positioning;
+   let our flex backdrop center it instead. */
+.room-settings-content {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  transform: none !important;
+  min-width: min(90vw, 360px) !important;
+  min-height: auto !important;
+  max-height: 85vh;
+  max-width: 90vw;
+  width: 100%;
+  overflow-y: auto;
+  z-index: 101;
+  align-items: stretch !important; /* lk has align-items:center; stretch makes .settings-menu fill width */
+}
+/* btn-sm used in settings footer */
+.btn-sm {
+  padding: 6px 16px;
+  font-size: 12px;
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
 }
 
 /* ——————————————————————————————————————
-   Language pill
+   Settings menu (SettingsMenu.tsx)
+   Rendered inside lk-settings-menu-modal which has dark bg (#111) from LK theme.
+   All colors use LK CSS vars so they read well on the dark background.
+   —————————————————————————————————————— */
+.settings-menu {
+  padding: 0;
+  font-family: var(--lk-font-family, var(--font-body));
+  color: var(--lk-fg, #fff);
+  width: 100%;           /* fill the lk-settings-menu-modal flex container */
+  box-sizing: border-box;
+}
+.settings-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px 12px;
+  border-bottom: 1px solid var(--lk-border-color, rgba(255,255,255,0.1));
+}
+.settings-title {
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--lk-fg, #fff);
+}
+.settings-close-btn {
+  background: none;
+  border: none;
+  color: var(--lk-fg3, rgba(255,255,255,0.8));
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  transition: color 0.15s ease;
+  border-radius: 4px;
+}
+.settings-close-btn:hover {
+  color: var(--lk-fg, #fff);
+  background: var(--lk-bg3, rgba(255,255,255,0.1));
+}
+.settings-section {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--lk-border-color, rgba(255,255,255,0.1));
+}
+.settings-section:last-of-type { border-bottom: none; }
+.settings-section-title {
+  font-family: var(--font-mono, monospace);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--lk-fg5, rgba(255,255,255,0.5));
+  margin: 0 0 10px;
+}
+.settings-info-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 3px 0;
+}
+.settings-info-label {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  color: var(--lk-fg5, rgba(255,255,255,0.5));
+  flex-shrink: 0;
+}
+.settings-info-value {
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--lk-fg, #fff);
+  text-align: right;
+}
+.settings-direction {
+  font-family: var(--font-mono, monospace);
+  font-size: 12px;
+  color: var(--lk-fg3, rgba(255,255,255,0.8));
+}
+.settings-info-muted {
+  color: var(--lk-fg5, rgba(255,255,255,0.4));
+  font-style: italic;
+}
+.settings-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 12px 16px;
+}
+
+/* Background effect picker grid */
+.settings-bg-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-top: 4px;
+}
+.settings-bg-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 10px 6px 8px;
+  background: var(--lk-bg3, rgba(255,255,255,0.06));
+  border: 1px solid var(--lk-border-color, rgba(255,255,255,0.12));
+  border-radius: var(--lk-border-radius, 6px);
+  color: var(--lk-fg3, rgba(255,255,255,0.7));
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  font-size: 11px;
+  font-family: var(--font-body, sans-serif);
+  min-height: 64px;
+  width: 100%;
+}
+.settings-bg-btn:hover {
+  background: var(--lk-bg5, rgba(255,255,255,0.1));
+  color: var(--lk-fg, #fff);
+}
+.settings-bg-btn--active {
+  border-color: var(--lk-accent, #2563eb);
+  background: rgba(37,99,235,0.15);
+  color: var(--lk-fg, #fff);
+}
+.settings-bg-btn--loading {
+  opacity: 0.5;
+  cursor: default;
+}
+.settings-bg-icon {
+  font-size: 20px;
+  line-height: 1;
+  display: block;
+}
+.settings-bg-label {
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+/* ——————————————————————————————————————
+   Settings — Phone Calls passcode section
+   —————————————————————————————————————— */
+
+.settings-passcode-desc {
+  font-size: 12px;
+  color: var(--lk-fg5, rgba(255,255,255,0.5));
+  margin: 0 0 10px;
+  line-height: 1.4;
+}
+.settings-passcode-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.settings-passcode-input {
+  flex: 1;
+  min-width: 0;
+  background: var(--lk-bg3, rgba(255,255,255,0.06));
+  border: 1px solid var(--lk-border-color, rgba(255,255,255,0.15));
+  border-radius: var(--lk-border-radius, 6px);
+  color: var(--lk-fg, #fff);
+  font-family: var(--font-mono, monospace);
+  font-size: 13px;
+  padding: 8px 10px;
+  outline: none;
+  transition: border-color 0.15s;
+  -webkit-appearance: none;
+}
+.settings-passcode-input:focus {
+  border-color: var(--lk-accent, #2563eb);
+}
+.settings-passcode-input::placeholder {
+  color: var(--lk-fg5, rgba(255,255,255,0.35));
+}
+.settings-passcode-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.settings-passcode-btn {
+  flex-shrink: 0;
+  background: var(--lk-accent, #2563eb);
+  color: #fff;
+  border: none;
+  border-radius: var(--lk-border-radius, 6px);
+  font-family: var(--font-body, sans-serif);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 8px 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, opacity 0.15s;
+  min-height: 36px;
+}
+.settings-passcode-btn:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+.settings-passcode-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.settings-passcode-btn--loading {
+  opacity: 0.7;
+  cursor: default;
+}
+.settings-passcode-status {
+  font-size: 12px;
+  line-height: 1.4;
+  margin: 4px 0 6px;
+  color: var(--lk-fg5, rgba(255,255,255,0.5));
+}
+.settings-passcode-status--ok  { color: #4ade80; }
+.settings-passcode-status--err { color: #f87171; }
+.settings-passcode-contact {
+  font-size: 11px;
+  color: var(--lk-fg5, rgba(255,255,255,0.4));
+  margin: 4px 0 0;
+  line-height: 1.4;
+}
+.settings-passcode-link {
+  color: var(--lk-accent, #60a5fa);
+  text-decoration: none;
+}
+.settings-passcode-link:hover {
+  text-decoration: underline;
+}
+
+/* Disabled state for chrome-icon-btn (Call-in when no trunk configured) */
+.chrome-icon-btn--disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+  pointer-events: none; /* prevents accidental tap on iOS */
+}
+.chrome-icon-btn--disabled:hover {
+  background: transparent;
+  color: inherit;
+}
+
+/* Mobile overrides for passcode section */
+@media (max-width: 640px) {
+  .settings-passcode-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .settings-passcode-btn {
+    min-height: 44px;
+    font-size: 13px;
+  }
+  .settings-passcode-input {
+    font-size: 16px; /* prevent iOS zoom on focus */
+    padding: 10px 12px;
+  }
+}
+
+/* ——————————————————————————————————————
+   Language pill (in-call switcher)
    —————————————————————————————————————— */
 
 .lang-pill {
@@ -770,6 +1039,7 @@ body {
   color: var(--fg);
   cursor: pointer;
   transition: border-color 0.15s ease;
+  max-width: 200px;           /* prevent long lang names from breaking layout */
 }
 
 .lang-pill:hover {
@@ -783,13 +1053,14 @@ body {
   color: var(--fg-tertiary);
 }
 
-.lang-pill-flag {
-  font-size: 14px;
-  line-height: 1;
-}
+.lang-pill-flag { font-size: 14px; line-height: 1; }
 
 .lang-pill-name {
   letter-spacing: 0.01em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
 }
 
 .lang-pill-chevron {
@@ -818,11 +1089,11 @@ body {
 .empty-stage-eyebrow {
   display: inline-block;
   margin-bottom: 18px;
-  padding: 6px 12px;
+  padding: 5px 12px;
   border: 1px solid var(--border);
   font-family: var(--font-mono);
   font-size: 11px;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--fg-tertiary);
 }
@@ -861,12 +1132,10 @@ body {
   transition: background 0.15s ease;
 }
 
-.invite-card-btn:hover {
-  background: #2a2823;
-}
+.invite-card-btn:hover { background: #333028; }
 
 /* ——————————————————————————————————————
-   Captions sidebar — pushes the room column, doesn't overlay it
+   Captions sidebar
    —————————————————————————————————————— */
 
 .captions {
@@ -876,8 +1145,6 @@ body {
   overflow: hidden;
   background: var(--bg);
   border-left: 1px solid transparent;
-  /* Smooth, slightly longer easing avoids the snap. Material standard
-     curve for entering/exiting elements. */
   transition:
     width 0.4s cubic-bezier(0.4, 0, 0.2, 1),
     border-color 0.4s ease;
@@ -907,7 +1174,7 @@ body {
   border-bottom: 1px solid var(--border-light);
   font-family: var(--font-mono);
   font-size: 11px;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--fg-tertiary);
 }
@@ -920,6 +1187,7 @@ body {
   font-size: 11px;
   padding: 4px 8px;
   cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
 }
 
 .captions-close:hover {
@@ -939,9 +1207,7 @@ body {
   animation: enter 0.32s ease both;
 }
 
-.captions-entry:last-child {
-  border-bottom: none;
-}
+.captions-entry:last-child { border-bottom: none; }
 
 .captions-speaker {
   display: flex;
@@ -981,23 +1247,2146 @@ body {
 }
 
 /* ——————————————————————————————————————
-   Responsive
+   Home page (redesigned landing)
+   —————————————————————————————————————— */
+
+.home-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+}
+
+/* ── Nav ── */
+.home-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 40px;
+  border-bottom: 1px solid var(--border-light);
+  background: var(--bg);
+  flex-shrink: 0;
+}
+
+.home-nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.home-nav-logo {
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.home-nav-name {
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1;
+  color: var(--fg);
+}
+
+.home-nav-name-bold  { font-weight: 600; }
+.home-nav-name-light { color: var(--fg-secondary); font-weight: 400; }
+
+.home-nav-badge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-tertiary);
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+}
+
+/* ── Two-column main layout ── */
+.home-main {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  min-height: 0;
+}
+
+/* ── Left column: hero ── */
+.home-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 56px 52px 56px 60px;
+  border-right: 1px solid var(--border-light);
+}
+
+.home-hero-logo {
+  margin-bottom: 28px;
+  filter: drop-shadow(0 6px 24px rgba(0, 80, 200, 0.2));
+  align-self: flex-start;
+}
+
+.home-logo-img {
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 5px rgba(0, 80, 200, 0.07),
+    0 0 0 10px rgba(0, 80, 200, 0.03);
+}
+
+.home-title {
+  font-size: clamp(32px, 3.6vw, 56px);
+  line-height: 1.07;
+  letter-spacing: -0.02em;
+  max-width: 480px;
+  margin-bottom: 18px;
+}
+
+.home-subtitle {
+  max-width: 400px;
+  margin-bottom: 28px;
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+/* Language strip — compact horizontal row */
+.home-langs {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 32px;
+}
+
+.home-langs-label {
+  color: var(--fg-ghost);
+  font-size: 11px;
+}
+
+.home-lang-strip {
+  flex-wrap: wrap;
+  max-width: 420px;
+}
+
+/* CTA */
+.home-cta {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+}
+
+.home-btn-primary {
+  padding: 14px 40px;
+  font-size: 14px;
+  letter-spacing: 0.01em;
+}
+
+.home-cta-note {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-ghost);
+  letter-spacing: 0.03em;
+}
+
+/* ── Right column: steps ── */
+.home-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 56px 60px 56px 52px;
+}
+
+.home-steps-heading {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-ghost);
+  margin-bottom: 20px;
+}
+
+/* Steps */
+.home-steps {
+  display: flex;
+  flex-direction: column;
+}
+
+.home-step {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.home-step:first-child { border-top: 1px solid var(--border-light); }
+.home-step:last-child  { border-bottom: none; }
+
+.home-step-num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 300;
+  color: var(--fg-ghost);
+  letter-spacing: 0.06em;
+  min-width: 24px;
+  padding-top: 2px;
+  flex-shrink: 0;
+}
+
+.home-step-body {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.home-step-title {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--fg);
+}
+
+.home-step-text {
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--fg-secondary);
+}
+
+/* ── Footer ── */
+.home-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 20px 24px;
+  border-top: 1px solid var(--border-light);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.home-footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--fg-tertiary);
+  letter-spacing: 0.02em;
+}
+
+.home-footer-links {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.home-footer-link {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--fg-tertiary);
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  transition: color 0.15s ease;
+  white-space: nowrap;
+}
+
+.home-footer-link:hover {
+  color: var(--fg);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.home-footer-sep {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-ghost);
+  user-select: none;
+}
+
+/* ——————————————————————————————————————
+   Pre-flight (join) page branding
+   —————————————————————————————————————— */
+
+.preflight-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.preflight-brand-name {
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--fg);
+}
+
+/* ——————————————————————————————————————
+   In-call room chrome branding
+   —————————————————————————————————————— */
+
+.chrome-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.chrome-brand-name {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fg);
+  letter-spacing: 0.01em;
+}
+
+/* ——————————————————————————————————————
+   Responsive — tablet range (521 – 900px)
+   Home page: tighten two-column padding so
+   it doesn't feel cramped on iPad/tablet.
+   —————————————————————————————————————— */
+
+@media (max-width: 900px) {
+  .home-left  { padding: 40px 32px 40px 40px; }
+  .home-right { padding: 40px 40px 40px 32px; }
+  .home-title { font-size: clamp(30px, 4.5vw, 52px); }
+}
+
+@media (max-width: 700px) and (min-width: 521px) {
+  /* On narrow-ish tablets collapse to single column early */
+  .home-main        { grid-template-columns: 1fr; }
+  .home-left        {
+    padding: 32px 28px 24px;
+    border-right: none;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .home-right       { padding: 24px 28px 32px; }
+  .home-hero-logo   { align-self: center; }
+  .home-left        { align-items: center; text-align: center; }
+  .home-langs       { align-items: center; }
+  .home-lang-strip  { justify-content: center; }
+  .home-cta         { align-items: center; }
+}
+
+/* ——————————————————————————————————————
+   Responsive — landing & pre-flight pages
    —————————————————————————————————————— */
 
 @media (max-width: 520px) {
-  .page {
-    padding: 24px 20px;
+  .page      { padding: 24px 20px; }
+  .page-top  { padding-top: 48px; }
+  .card      { padding: 20px; }
+  /* All full-width buttons on mobile */
+  .btn-dark, .btn-outline { width: 100%; }
+  .container { max-width: 100%; }
+
+  /* Shrink the hero title slightly so it never overflows */
+  .display-xl { font-size: clamp(40px, 14vw, 64px); }
+  .display-lg { font-size: clamp(28px, 10vw, 42px); }
+
+  /* Tighten the language strip on small screens */
+  .lang-strip { gap: 4px; }
+  .lang-tag   { padding: 3px 8px; font-size: 10px; }
+
+  /* Home page mobile — collapse to single column */
+  .home-nav         { padding: 12px 18px; }
+  .home-nav-name    { font-size: 13px; }
+  .home-main        { grid-template-columns: 1fr; }
+  .home-left        {
+    padding: 36px 20px 28px;
+    border-right: none;
+    border-bottom: 1px solid var(--border-light);
+    align-items: stretch;        /* stretch so CTA buttons fill full width */
+  }
+  .home-right       { padding: 28px 20px 36px; }
+  .home-hero-logo   { margin-bottom: 20px; align-self: flex-start; }
+  .home-title       { font-size: clamp(30px, 10vw, 48px); margin-bottom: 14px; }
+  .home-subtitle    { font-size: 14px; margin-bottom: 20px; max-width: 100%; }
+  .home-langs       { margin-bottom: 24px; }
+  /* CTA: stack vertically, full width */
+  .home-cta         { flex-direction: column; align-items: stretch; gap: 10px; }
+  .home-btn-primary { padding: 14px 32px; width: 100%; }
+  /* Clerk UserButton stays auto-width — don't stretch it */
+  .home-cta .cl-userButtonBox,
+  .home-cta .cl-userButtonTrigger { width: auto !important; align-self: flex-start; }
+  /* Email note stays left-aligned */
+  .home-cta-note    { align-self: flex-start; }
+
+  /* Footer: stack brand + links vertically on mobile */
+  .home-footer       { flex-direction: column; gap: 10px; padding: 16px 20px; }
+  .home-footer-brand { justify-content: center; }
+  .home-footer-links { gap: 8px; justify-content: center; }
+}
+/* ——————————————————————————————————————
+   Responsive — in-call room (≤ 640px)
+   Mobile-first: everything must work on 360px wide screens.
+   —————————————————————————————————————— */
+@media (max-width: 640px) {
+
+  /* ── Room shell: dvh avoids iOS safari address bar clipping ── */
+  .room-shell {
+    height: 100dvh;
+    min-height: -webkit-fill-available;
   }
 
-  .page-top {
-    padding-top: 48px;
+  /* ── Room chrome: compact single row ── */
+  .room-chrome {
+    padding: 6px 8px;
+    gap: 4px;
+    flex-wrap: nowrap;
+    min-height: 44px;
+  }
+  .chrome-brand-name { display: none; }
+  .chrome-meta {
+    font-size: 10px;
+    gap: 4px;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .chrome-participants { font-size: 10px; flex-shrink: 0; }
+  .chrome-hearing  { display: none; }
+  .chrome-direction { display: none; }
+  .chrome-actions {
+    gap: 2px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    flex-shrink: 1;
+    min-width: 0;
+  }
+  .chrome-actions::-webkit-scrollbar { display: none; }
+
+  /* ── Icon buttons: 44px touch target, icon-only ── */
+  .chrome-icon-btn {
+    padding: 8px;
+    min-width: 36px;
+    min-height: 36px;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .chrome-icon-btn-label { display: none; }
+
+  /* ── Language pill: compact ── */
+  .lang-pill {
+    padding: 6px 8px;
+    font-size: 11px;
+    gap: 4px;
+    max-width: 120px;
+  }
+  .lang-pill-prefix { display: none; }
+
+  /* ── LK control bar: tighter padding on mobile ── */
+  .lk-control-bar { padding: 6px 4px !important; }
+
+  /* ── Empty stage ── */
+  .empty-stage { padding: 0 16px; }
+  .invite-card {
+    flex-direction: column;
+    margin-top: 20px;
+  }
+  .invite-card-url {
+    padding: 12px 14px;
+    white-space: normal;
+    word-break: break-all;
+    font-size: 11px;
+  }
+  .invite-card-btn {
+    padding: 12px 14px;
+    text-align: center;
+    border-top: 1px solid var(--border);
   }
 
-  .card {
-    padding: 20px;
+  /* ── Captions: full-width bottom sheet ── */
+  .captions {
+    position: fixed;
+    inset: auto 0 0 0;
+    width: 100% !important;
+    height: 0;
+    border-left: none;
+    border-top: 1px solid transparent;
+    flex-direction: column;
+    z-index: 40;
+    transition:
+      height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+      border-color 0.35s ease;
+  }
+  .room-shell--captions-open .captions {
+    width: 100% !important;
+    height: min(55vh, 380px);
+    border-top-color: var(--border);
+  }
+  .captions-inner { width: 100%; height: 100%; }
+  .room-shell--captions-open .room { flex: 1; }
+
+  /* ── Chat: full viewport width when open ── */
+  .room-chat-host--open {
+    width: 100vw !important;
   }
 
-  .btn-dark {
-    width: 100%;
+  /* ── Settings: bottom sheet ── */
+  .room-settings-backdrop {
+    padding: 0;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .room-settings-content {
+    max-width: 100% !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-height: 90dvh;
+    max-height: 90vh;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    /* Push up when soft keyboard opens so input stays in view */
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  /* Background effect: 2 columns on small screens */
+  .settings-bg-grid { grid-template-columns: repeat(2, 1fr); }
+  /* Touch-friendly settings padding */
+  .settings-section { padding: 12px 14px; }
+  .settings-header  { padding: 12px 14px 10px; }
+  .settings-footer  { padding: 10px 14px; }
+
+  /* ── End call / Leave: handled by .control-row mobile rules above ── */
+  /* (width, height, padding are set on .control-row .end-call-btn/leave-btn) */
+  /* Button is full-width on mobile — show full labels on both host and guest */
+  .leave-btn .chrome-icon-btn-label { display: inline; }
+  .end-call-label-full  { display: inline; }   /* "End call for everyone" */
+  .end-call-label-short { display: none; }
+
+  /* mic-prompt mobile overrides live in the component's own @media blocks */
+}
+
+/* ——————————————————————————————————————
+   Responsive — very small phones (≤ 400px)
+   Control bar: hide text labels, show icon only
+   to avoid overflow on 360px-wide devices
+   —————————————————————————————————————— */
+
+@media (max-width: 400px) {
+  /* Room chrome: hide meta entirely on tiny phones — lang pill still visible */
+  .chrome-meta { display: none; }
+  /* Lang pill: even more compact */
+  .lang-pill { max-width: 100px; font-size: 10px; padding: 5px 6px; }
+  /* Home page nav: hide badge */
+  .home-nav-badge  { display: none; }
+  /* Tighten nav on tiny phones */
+  .home-nav        { padding: 10px 14px; }
+  /* Settings bg picker: tighter */
+  .settings-bg-btn { min-height: 56px; padding: 8px 4px 6px; }
+  .settings-bg-icon { font-size: 18px; }
+  /* Footer already stacked from ≤520px; just tighten padding */
+  .home-footer { padding: 14px 14px; }
+  /* mic-prompt ≤400px overrides live in the component's own @media blocks */
+}
+
+/* ——————————————————————————————————————
+   End call / Leave button
+   Sits in .chrome-actions alongside the other icon buttons.
+   Desktop : pill with icon + full label "End call for everyone".
+   Mobile ≤640px : pill with icon + short label "End all" (label stays visible
+                   so the host knows it ends for everyone, not just themselves).
+   —————————————————————————————————————— */
+.end-call-btn,
+.leave-btn {
+  display:      inline-flex;
+  align-items:  center;
+  justify-content: center;
+  gap:          5px;
+  padding:      6px 14px;
+  border-radius: 6px;
+  font-size:    13px;
+  font-weight:  600;
+  cursor:       pointer;
+  white-space:  nowrap;
+  transition:   background 0.15s, border-color 0.15s;
+  flex-shrink:  0;
+  /* Ensure tap target is at least 36px tall on all screens */
+  min-height:   36px;
+}
+/* Desktop: show full label, hide short label */
+.end-call-label-full  { display: inline; }
+.end-call-label-short { display: none; }
+.end-call-btn {
+  background: #ef4444;
+  color:      #fff;
+  border:     none;
+}
+.end-call-btn:hover  { background: #c53030; }
+.end-call-btn:active { background: #b91c1c; }
+
+.leave-btn {
+  background: transparent;
+  color:      var(--lk-fg, #fff);
+  border:     1px solid var(--lk-border, rgba(255,255,255,0.25));
+}
+.leave-btn:hover  { background: rgba(255,255,255,0.08); }
+.leave-btn:active { background: rgba(255,255,255,0.14); }
+
+/* ── Mic permission prompt modal ────────────────────────────────────────────
+   Mobile audit:
+   - align-items:flex-start on overlay so card is scrollable on short screens
+   - white-space:normal on buttons so long text wraps instead of overflowing
+   - Removed redundant .mic-prompt-header wrapper
+   - 52px touch targets on mobile, stacked buttons
+   - 3-tier responsive: desktop / ≤640px / ≤380px + landscape ≤500px tall
+   ─────────────────────────────────────────────────────────────────────────── */
+.mic-prompt-overlay {
+  position:        fixed;
+  inset:           0;
+  z-index:         300;
+  display:         flex;
+  align-items:     flex-start;   /* card scrollable on short/landscape screens */
+  justify-content: center;
+  overflow-y:      auto;
+  background:      rgba(10, 10, 8, 0.72);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  padding:
+    max(env(safe-area-inset-top,    0px), 40px)
+    16px
+    max(env(safe-area-inset-bottom, 0px), 40px)
+    16px;
+}
+
+.mic-prompt-card {
+  background:     #F6F4F0;
+  border:         1px solid #DAD7D0;
+  border-radius:  2px;
+  box-shadow:     0 2px 4px rgba(26,25,23,0.06), 0 16px 48px rgba(26,25,23,0.22);
+  padding:        36px 32px 32px;
+  width:          clamp(300px, 90vw, 420px);
+  display:        flex;
+  flex-direction: column;
+  flex-shrink:    0;
+}
+
+.mic-prompt-title {
+  font-family: var(--font-display, 'Instrument Serif', Georgia, serif);
+  font-size:   24px;
+  font-weight: 400;
+  line-height: 1.25;
+  color:       #1A1917;
+  margin:      0 0 14px 0;
+}
+
+.mic-prompt-body {
+  font-family: var(--font-body, 'DM Sans', sans-serif);
+  font-size:   14px;
+  font-weight: 400;
+  line-height: 1.65;
+  color:       #6B6860;
+  margin:      0 0 28px 0;
+}
+
+.mic-prompt-actions {
+  display: flex;
+  gap:     10px;
+}
+
+.mic-prompt-btn {
+  flex:          1;
+  font-family:   var(--font-body, 'DM Sans', sans-serif);
+  font-size:     14px;
+  font-weight:   500;
+  cursor:        pointer;
+  min-height:    44px;
+  padding:       11px 16px;
+  border-radius: 0;
+  white-space:   normal;     /* allow wrap on narrow screens */
+  text-align:    center;
+  line-height:   1.3;
+  transition:    background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.mic-prompt-btn--primary {
+  background: #1A1917;
+  color:      #F6F4F0;
+  border:     1px solid #1A1917;
+}
+.mic-prompt-btn--primary:hover  { background: #333028; border-color: #333028; }
+.mic-prompt-btn--primary:active { background: #0e0d0b; border-color: #0e0d0b; }
+
+.mic-prompt-btn--secondary {
+  background: transparent;
+  color:      #1A1917;
+  border:     1px solid #DAD7D0;
+}
+.mic-prompt-btn--secondary:hover  { border-color: #1A1917; }
+.mic-prompt-btn--secondary:active { background: #EDEAE4; }
+
+/* ── Mobile ≤640px ───────────────────────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .mic-prompt-overlay {
+    padding:
+      max(env(safe-area-inset-top,    0px), 24px)
+      16px
+      max(env(safe-area-inset-bottom, 0px), 24px)
+      16px;
+  }
+  .mic-prompt-card    { width: calc(100vw - 32px); padding: 28px 20px 24px; }
+  .mic-prompt-title   { font-size: 21px; margin-bottom: 12px; }
+  .mic-prompt-body    { font-size: 14px; margin-bottom: 24px; }
+  .mic-prompt-actions { flex-direction: column; gap: 8px; }
+  .mic-prompt-btn     { width: 100%; min-height: 52px; font-size: 15px; }
+}
+
+/* ── Very narrow phones ≤380px ────────────────────────────────────────────────────── */
+@media (max-width: 380px) {
+  .mic-prompt-card  { padding: 24px 16px 20px; }
+  .mic-prompt-title { font-size: 19px; }
+}
+
+/* ── Short landscape screens ≤500px tall ────────────────────────────────────────── */
+@media (max-height: 500px) {
+  .mic-prompt-overlay {
+    padding-top:    max(env(safe-area-inset-top,    0px), 12px);
+    padding-bottom: max(env(safe-area-inset-bottom, 0px), 12px);
+  }
+  .mic-prompt-card    { padding: 20px 24px 20px; }
+  .mic-prompt-title   { font-size: 18px; margin-bottom: 8px; }
+  .mic-prompt-body    { font-size: 13px; margin-bottom: 16px; }
+  .mic-prompt-actions { gap: 6px; }
+  .mic-prompt-btn     { min-height: 44px; }
+}
+
+/* ——————————————————————————————————————
+   Legal pages (Terms + Privacy)
+   —————————————————————————————————————— */
+
+.legal-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+}
+
+/* ── Legal nav ── */
+.legal-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 40px;
+  border-bottom: 1px solid var(--border-light);
+  background: var(--bg);
+  flex-shrink: 0;
+}
+
+.legal-nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  text-decoration: none;
+}
+
+.legal-nav-name {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fg);
+}
+
+.legal-nav-back {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--fg-tertiary);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  transition: color 0.15s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.legal-nav-back:hover {
+  color: var(--fg);
+}
+
+/* ── Main content area ── */
+.legal-main {
+  flex: 1;
+  padding: 56px 24px 80px;
+}
+
+.legal-container {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+/* ── Page header ── */
+.legal-header {
+  margin-bottom: 40px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.legal-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-ghost);
+  margin-bottom: 10px;
+}
+
+.legal-title {
+  font-family: var(--font-display);
+  font-size: clamp(32px, 6vw, 48px);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--fg);
+  margin-bottom: 12px;
+}
+
+.legal-meta {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--fg-tertiary);
+  letter-spacing: 0.02em;
+}
+
+/* ── Body content ── */
+.legal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.legal-section {
+  padding: 24px 0;
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.legal-section:last-child {
+  border-bottom: none;
+}
+
+.legal-section p {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--fg-secondary);
+}
+
+.legal-h2 {
+  font-family: var(--font-body);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--fg);
+  letter-spacing: -0.01em;
+  margin-bottom: 2px;
+}
+
+.legal-h3 {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fg);
+  margin-top: 4px;
+  margin-bottom: -4px;
+}
+
+.legal-list {
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  list-style: disc;
+}
+
+.legal-list li {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--fg-secondary);
+}
+
+.legal-link {
+  color: var(--fg);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--border);
+  transition: text-decoration-color 0.15s ease;
+}
+
+.legal-link:hover {
+  text-decoration-color: var(--fg);
+}
+
+.legal-contact-card {
+  border: 1px solid var(--border);
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: var(--bg-elevated);
+}
+
+.legal-contact-card p {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--fg-secondary);
+  margin: 0 !important;
+}
+
+.legal-contact-card strong {
+  color: var(--fg);
+}
+
+/* ── Legal page footer ── */
+.legal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 32px 0 0;
+  margin-top: 8px;
+  border-top: 1px solid var(--border-light);
+  flex-wrap: wrap;
+}
+
+.legal-footer-sep {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-ghost);
+  user-select: none;
+}
+
+/* ── Legal page mobile ── */
+@media (max-width: 640px) {
+  .legal-nav {
+    padding: 12px 20px;
+  }
+
+  .legal-main {
+    padding: 36px 20px 60px;
+  }
+
+  .legal-header {
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+  }
+
+  .legal-section {
+    padding: 18px 0;
+    gap: 12px;
+  }
+
+  .legal-section p {
+    font-size: 14px;
+    line-height: 1.65;
+  }
+
+  .legal-list li {
+    font-size: 14px;
+  }
+
+  .legal-h2 {
+    font-size: 16px;
   }
 }
+
+@media (max-width: 400px) {
+  .legal-nav {
+    padding: 10px 14px;
+  }
+
+  .legal-main {
+    padding: 28px 16px 48px;
+  }
+
+  .legal-nav-back {
+    font-size: 11px;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   InvitePhoneModal (ipm-*)
+   A modal for dialing one or more phone numbers into the room via SIP.
+   Rendered as a centered overlay card with a dark backdrop.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+.ipm-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 10, 8, 0.68);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.ipm-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 6px rgba(26,25,23,0.08), 0 20px 60px rgba(26,25,23,0.28);
+  border-radius: 2px;
+  width: 100%;
+  max-width: 520px;
+  max-height: 85dvh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Header ── */
+.ipm-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px 14px;
+  border-bottom: 1px solid var(--border-light);
+  flex-shrink: 0;
+}
+
+.ipm-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--fg);
+}
+
+.ipm-title {
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--fg);
+}
+
+.ipm-close {
+  background: none;
+  border: none;
+  color: var(--fg-tertiary);
+  cursor: pointer;
+  /* Minimum 44×44 touch target */
+  padding: 10px;
+  margin: -6px;
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+  transition: color 0.15s, background 0.15s;
+}
+.ipm-close:hover {
+  color: var(--fg);
+  background: var(--bg-inset);
+}
+
+/* ── Column headings ── */
+.ipm-col-headings {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 10px 20px 4px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-tertiary);
+}
+
+/* ── Entry rows ── */
+.ipm-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 6px 20px 4px;
+}
+
+.ipm-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 8px;
+  align-items: start;
+  flex-wrap: wrap;
+}
+
+/* Phone input wrapper (holds input + status icon) */
+.ipm-phone-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.ipm-phone-input {
+  width: 100%;
+  padding: 10px 34px 10px 12px;   /* right-pad for status icon */
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--fg);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 0;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.ipm-phone-input::placeholder { color: var(--fg-ghost); }
+.ipm-phone-input:focus         { border-color: var(--fg-tertiary); }
+.ipm-phone-input--error        { border-color: var(--error); }
+
+/* Status icon sits inside the phone input on the right */
+.ipm-status {
+  position: absolute;
+  right: 10px;
+  font-size: 13px;
+  line-height: 1;
+  pointer-events: none;
+}
+.ipm-status--dialing { opacity: 0.7; }
+.ipm-status--ok      { color: var(--success); }
+.ipm-status--error   { color: var(--error); }
+
+/* Language picker */
+.ipm-lang-select {
+  height: 40px;
+  padding: 0 8px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--fg);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 0;
+  outline: none;
+  cursor: pointer;
+  min-width: 130px;
+  max-width: 160px;
+  transition: border-color 0.15s;
+}
+.ipm-lang-select:focus { border-color: var(--fg-tertiary); }
+.ipm-lang-select:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Remove-row button */
+.ipm-remove-row {
+  width: 36px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--fg-tertiary);
+  cursor: pointer;
+  border-radius: 0;
+  flex-shrink: 0;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.ipm-remove-row:hover {
+  color: var(--error);
+  border-color: var(--error);
+  background: var(--error-soft);
+}
+.ipm-remove-row:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* Per-row error text */
+.ipm-row-error {
+  grid-column: 1 / -1;    /* spans full row */
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--error);
+  padding: 2px 0 2px 2px;
+}
+
+/* ── DTMF / extension input ── */
+/* Wrapper holds the input + tooltip hint icon side by side */
+/* ipm-dtmf-* removed — Extension/IVR pre-dial field was deleted */
+
+/* ── Add another row button ── */
+.ipm-add-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 8px 20px 2px;
+  padding: 6px 10px;
+  background: none;
+  border: 1px dashed var(--border);
+  color: var(--fg-secondary);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  border-radius: 0;
+  transition: color 0.15s, border-color 0.15s;
+  align-self: flex-start;
+}
+.ipm-add-row:hover {
+  color: var(--fg);
+  border-color: var(--fg-tertiary);
+}
+.ipm-add-row:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ── Footer ── */
+.ipm-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 20px;
+  border-top: 1px solid var(--border-light);
+  flex-shrink: 0;
+}
+
+.ipm-cancel {
+  padding: 9px 18px;
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--fg-secondary);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  border-radius: 0;
+  transition: color 0.15s, border-color 0.15s;
+}
+.ipm-cancel:hover { color: var(--fg); border-color: var(--fg-tertiary); }
+.ipm-cancel:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.ipm-call-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 22px;
+  background: var(--fg);
+  color: var(--bg);
+  border: none;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 0;
+  transition: background 0.15s;
+}
+.ipm-call-btn:hover  { background: #333028; }
+.ipm-call-btn:active { background: #0e0d0b; }
+.ipm-call-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Call button spinner */
+.ipm-spinner {
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid rgba(246,244,240,0.35);
+  border-top-color: var(--bg);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+/* ── Mobile: bottom-sheet layout ── */
+@media (max-width: 640px) {
+  /* Slide up from bottom as a sheet, just like the participants panel */
+  .ipm-backdrop {
+    padding: 0;
+    align-items: flex-end;
+  }
+  .ipm-card {
+    max-width: 100%;
+    /* Taller sheet on mobile — more space for multi-number entries */
+    max-height: min(92dvh, 92vh);
+    border-radius: 12px 12px 0 0;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    /* Respect iOS home-indicator */
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  /* Drag handle above the header */
+  .ipm-header {
+    position: relative;
+    padding-top: 22px;
+  }
+  .ipm-header::before {
+    content: "";
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 36px;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+  }
+
+  /* Column headings hidden — no space on 360px */
+  .ipm-col-headings { display: none; }
+
+  /* Each row: phone takes full first row, lang + remove share second row */
+  .ipm-row {
+    grid-template-columns: 1fr auto;
+    row-gap: 6px;
+  }
+  .ipm-phone-wrap { grid-column: 1 / -1; }
+
+  /* Phone input: larger font and tap target on mobile */
+  .ipm-phone-input {
+    font-size: 16px;        /* prevents iOS zoom-on-focus */
+    padding: 12px 36px 12px 12px;
+    min-height: 48px;
+  }
+
+  /* Lang select: fills remaining space next to remove button */
+  .ipm-lang-select {
+    min-width: 0;
+    flex: 1;
+    height: 44px;           /* touch-friendly */
+    font-size: 14px;
+  }
+
+  /* Remove button: square touch target */
+  .ipm-remove-row { width: 44px; height: 44px; }
+
+  /* Footer: stack Cancel / Call vertically on mobile */
+  .ipm-footer {
+    flex-direction: column-reverse;  /* Call first (top), Cancel below */
+    gap: 8px;
+    padding: 12px 16px 16px;
+  }
+  .ipm-cancel,
+  .ipm-call-btn {
+    width: 100%;
+    justify-content: center;
+    min-height: 48px;
+    font-size: 15px;
+  }
+
+  /* Add-row button: full width on mobile */
+  .ipm-add-row {
+    margin: 8px 16px 2px;
+    width: calc(100% - 32px);
+    justify-content: center;
+    min-height: 44px;
+  }
+
+  /* Row padding: more breathable on mobile */
+  .ipm-rows { padding: 8px 16px 4px; }
+
+  /* ipm-close — already 44px touch target via padding, ensure it on mobile */
+  .ipm-close {
+    padding: 10px;
+    margin: -6px;
+  }
+
+}
+
+/* ── Very small phones (≤380px) ── */
+@media (max-width: 380px) {
+  .ipm-phone-input { font-size: 15px; }
+  .ipm-lang-select { font-size: 13px; }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   ParticipantsPanel (pp-*)
+   A slide-in panel from the right edge listing all participants.
+   Host sees Kick / Hang-up buttons on each remote row.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+/* Backdrop — transparent; just used to capture outside-click to close */
+.pp-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 49;          /* below the panel (z-index 50) */
+  background: rgba(0, 0, 0, 0.25);
+}
+
+/* Slide-in panel */
+.pp-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(320px, 90vw);
+  background: var(--bg);
+  border-left: 1px solid var(--border);
+  box-shadow: -4px 0 24px rgba(0,0,0,0.18);
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.pp-panel--open {
+  transform: translateX(0);
+}
+
+/* ── Header ── */
+.pp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border-light);
+  flex-shrink: 0;
+  background: var(--bg);
+}
+
+.pp-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--fg);
+}
+
+.pp-title {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fg);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pp-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  background: var(--fg);
+  color: var(--bg);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 400;
+  border-radius: 9px;
+}
+
+.pp-close {
+  background: none;
+  border: none;
+  color: var(--fg-tertiary);
+  cursor: pointer;
+  /* 44px touch target — transparent padding expands hit area without visual size change */
+  padding: 10px;
+  margin: -6px;
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+  transition: color 0.15s, background 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.pp-close:hover {
+  color: var(--fg);
+  background: var(--bg-inset);
+}
+
+/* ── Body ── */
+.pp-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 0;
+}
+
+/* ── Section ── */
+.pp-section {
+  padding: 4px 0 8px;
+  border-bottom: 1px solid var(--border-light);
+}
+.pp-section:last-child { border-bottom: none; }
+
+.pp-section-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-ghost);
+  padding: 6px 16px 4px;
+}
+
+/* ── Participant row ── */
+.pp-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 16px;
+  transition: background 0.15s, opacity 0.3s;
+}
+.pp-row:hover { background: var(--bg-elevated); }
+
+.pp-row--leaving {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.pp-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--lk-bg3, rgba(255,255,255,0.08));
+  color: var(--lk-fg3, rgba(255,255,255,0.6));
+}
+
+.pp-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pp-name {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--fg);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pp-you-badge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--fg-tertiary);
+  letter-spacing: 0.04em;
+}
+
+.pp-lang {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-tertiary);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pp-row-error {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--error);
+  margin-top: 2px;
+}
+
+/* ── Host action buttons ── */
+.pp-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  border-radius: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s, color 0.15s, border-color 0.15s, opacity 0.15s;
+  white-space: nowrap;
+}
+
+.pp-action-btn--kick {
+  background: transparent;
+  color: var(--fg-secondary);
+  border: 1px solid var(--border);
+}
+.pp-action-btn--kick:hover {
+  color: var(--error);
+  border-color: var(--error);
+  background: var(--error-soft);
+}
+
+.pp-action-btn--hangup {
+  background: transparent;
+  color: var(--fg-secondary);
+  border: 1px solid var(--border);
+}
+.pp-action-btn--hangup:hover {
+  color: var(--error);
+  border-color: var(--error);
+  background: var(--error-soft);
+}
+
+.pp-action-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.pp-action-label {
+  font-size: 11px;
+}
+
+/* Spinner inside action button */
+.pp-action-spinner {
+  width: 10px;
+  height: 10px;
+  border: 1.5px solid rgba(0,0,0,0.15);
+  border-top-color: var(--fg-secondary);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+/* ── Empty state ── */
+.pp-empty {
+  padding: 32px 16px;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-tertiary);
+}
+
+/* ── Mobile: ParticipantsPanel slides up from bottom as a sheet ── */
+@media (max-width: 640px) {
+  .pp-panel {
+    width: 100vw;
+    border-left: none;
+    border-top: 1px solid var(--border);
+    top: auto;
+    /* Taller sheet so mute + kick controls have enough vertical room */
+    height: min(80dvh, 80vh);
+    transform: translateY(100%);
+    border-radius: 12px 12px 0 0;   /* rounded top corners — bottom-sheet feel */
+    /* Safe-area padding at bottom for iOS home-indicator bar */
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  .pp-panel--open { transform: translateY(0); }
+  .pp-backdrop { background: rgba(0, 0, 0, 0.45); }
+
+  /* Drag handle — visual affordance for the bottom sheet */
+  .pp-header::before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 36px;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+  }
+  .pp-header { position: relative; padding-top: 20px; }
+
+  /* Each row: let controls wrap onto a second line under the name */
+  .pp-row {
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 10px 14px;
+    /* Give each row enough height for controls to breathe */
+    min-height: 54px;
+  }
+  /* Info takes full width so controls sit below on their own row */
+  .pp-info { flex-basis: calc(100% - 38px); min-width: 0; }
+  .pp-controls {
+    /* Full-width second line under the participant name */
+    flex-basis: 100%;
+    margin-left: 38px;    /* align with name (avatar width 28px + gap 10px) */
+    flex-wrap: wrap;
+    gap: 6px;
+    /* Allow controls to use the full available width */
+    width: calc(100% - 38px);
+  }
+  /* Name: always shows, ellipsis when truncated */
+  .pp-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   pp-controls — host mute + kick button group inside each participant row
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.pp-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+/* ── Mute toggle button (mic / camera) ── */
+.pp-mute-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 5px 9px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  border-radius: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--fg-secondary);
+  /* 36px minimum height — comfortable tap target on mobile */
+  min-height: 36px;
+  transition: background 0.15s, color 0.15s, border-color 0.15s, opacity 0.15s;
+  white-space: nowrap;
+  /* Prevent text shrink on very narrow panels */
+  min-width: 0;
+}
+.pp-mute-btn:hover {
+  color: var(--fg);
+  border-color: var(--fg-tertiary);
+  background: var(--bg-inset);
+}
+/* When already muted: warm amber — signals "click to unmute" */
+.pp-mute-btn--muted {
+  color: var(--warning, #A07B1A);
+  border-color: var(--warning, #A07B1A);
+  background: var(--warning-soft, rgba(160,123,26,0.08));
+}
+.pp-mute-btn--muted:hover {
+  color: var(--fg);
+  border-color: var(--fg-tertiary);
+  background: var(--bg-elevated);
+}
+.pp-mute-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.pp-mute-label {
+  font-size: 10px;
+}
+.pp-mute-error {
+  color: var(--error);
+  font-weight: 700;
+  font-size: 11px;
+  margin-left: 2px;
+}
+
+/* ── People-panel keypad button (SIP rows only) ────────────────────────── */
+/* Visually distinct from mute toggles — accent-tinted, not a state toggle */
+.pp-panel-keypad-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 5px 9px;
+  min-height: 36px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  border-radius: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+  border: 1px solid var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+}
+.pp-panel-keypad-btn:hover {
+  background: rgba(200, 67, 43, 0.14);
+  color: var(--accent);
+}
+.pp-panel-keypad-label {
+  font-size: 10px;
+}
+
+/* On mobile panel width (~320px or full-width bottom sheet):
+   hide text labels — show icon-only buttons to prevent horizontal overflow.
+   Also increase min-height to 44px for comfortable touch targets. */
+@media (max-width: 640px) {
+  .pp-mute-label         { display: none; }
+  .pp-action-label       { display: none; }
+  .pp-panel-keypad-label { display: none; }
+  /* 44px touch targets — icon-only, square buttons */
+  .pp-mute-btn           { min-height: 44px; min-width: 44px; padding: 0; justify-content: center; }
+  .pp-action-btn         { min-height: 44px; min-width: 44px; padding: 0; justify-content: center; }
+  .pp-panel-keypad-btn   { min-height: 44px; min-width: 44px; padding: 0; justify-content: center; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ppt-* — PhoneParticipantTile  (custom tile for SIP / phone callers)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Row of phone tiles displayed below the main camera grid */
+.ppt-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 12px 4px;
+  justify-content: flex-start;
+}
+
+/* Individual tile — flexible width, never overflows grid container */
+.ppt-tile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--bg-elevated, rgba(255,255,255,0.05));
+  border: 1px solid var(--border, rgba(255,255,255,0.1));
+  border-radius: 2px;
+  flex: 1 1 220px;          /* wider base so keypad btn fits comfortably */
+  min-width: 0;
+  max-width: 340px;         /* allow more room for keypad btn on desktop */
+}
+
+/* Avatar area with animated pulse */
+.ppt-avatar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  /* Use design's own accent colour for the avatar bg */
+  background: var(--accent-soft, rgba(200,67,43,0.07));
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Ripple/pulse ring — "on call" indicator */
+.ppt-pulse {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid var(--accent, #C8432B);
+  opacity: 0.35;
+  animation: ppt-pulse 2s ease-out infinite;
+  pointer-events: none;
+}
+@keyframes ppt-pulse {
+  0%   { transform: scale(0.88); opacity: 0.4; }
+  70%  { transform: scale(1.18); opacity: 0; }
+  100% { transform: scale(0.88); opacity: 0; }
+}
+
+.ppt-phone-icon {
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+/* Info column: name + lang + status */
+.ppt-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;       /* allow text-overflow to work inside flex children */
+  flex: 1;
+}
+.ppt-name {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--fg);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ppt-lang {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-tertiary);
+  letter-spacing: 0.04em;
+}
+.ppt-status {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--accent);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Mobile — tiles fill full width of the grid area */
+@media (max-width: 640px) {
+  .ppt-row {
+    padding: 6px 8px 8px;
+    gap: 6px;
+  }
+  .ppt-tile {
+    flex: 1 1 100%;    /* full-width stacked on narrow screens */
+    max-width: 100%;
+    padding: 10px 12px;
+    min-height: 64px;  /* comfortable tap area height */
+  }
+  /* Bigger avatar on mobile for easier identification */
+  .ppt-avatar { width: 44px; height: 44px; }
+  .ppt-name   { font-size: 14px; }
+}
+
+/* ── PhoneParticipantTile keypad button ──────────────────────────────────── */
+.ppt-keypad-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  /* Minimum 44px touch target height on mobile */
+  min-height: 36px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--fg-secondary);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+}
+.ppt-keypad-btn:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.ppt-keypad-label {
+  /* shown on desktop, hidden on very narrow tiles */
+}
+@media (max-width: 640px) {
+  /* On mobile the tile is full-width, so the keypad btn always fits */
+  .ppt-keypad-btn {
+    min-height: 44px;
+    padding: 0 12px;
+  }
+}
+@media (max-width: 400px) {
+  .ppt-keypad-label { display: none; }
+  .ppt-keypad-btn   { padding: 0 10px; }
+}
+
+/* ── DTMF Keypad modal ───────────────────────────────────────────────────── */
+/* Full-screen dark overlay */
+.dtmf-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  /* iOS safe area */
+  padding-bottom: calc(16px + env(safe-area-inset-bottom));
+}
+
+/* Card */
+.dtmf-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.25), 0 4px 12px rgba(0,0,0,0.12);
+  width: 100%;
+  max-width: 320px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  /* Prevent card from being too tall on small phones */
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+}
+
+/* Header row: phone icon + title + close button */
+.dtmf-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+.dtmf-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.dtmf-phone-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: var(--accent-soft);
+  border-radius: 50%;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+.dtmf-title {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fg);
+  line-height: 1.2;
+}
+.dtmf-caller {
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: var(--fg-secondary);
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
+}
+.dtmf-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* 44×44 touch target */
+  width: 44px;
+  height: 44px;
+  margin: -8px -8px -8px 0;
+  background: none;
+  border: none;
+  border-radius: 50%;
+  color: var(--fg-secondary);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s, color 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.dtmf-close:hover {
+  background: var(--bg-inset);
+  color: var(--fg);
+  border-radius: 50%;
+}
+
+/* Sequence display — shows digits sent */
+.dtmf-display {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  min-height: 42px;
+}
+.dtmf-display-digits {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--fg);
+  letter-spacing: 0.12em;
+  word-break: break-all;
+  flex: 1;
+}
+.dtmf-display-placeholder {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--fg-ghost);
+  flex: 1;
+}
+.dtmf-clear-btn {
+  background: none;
+  border: none;
+  color: var(--fg-tertiary);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 2px;
+  transition: color 0.15s;
+  flex-shrink: 0;
+}
+.dtmf-clear-btn:hover { color: var(--fg); }
+
+/* Error */
+.dtmf-error {
+  font-size: 11px;
+  color: var(--error);
+  padding: 6px 10px;
+  background: var(--error-soft);
+  border-radius: 8px;
+}
+
+/* Keypad grid */
+.dtmf-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.dtmf-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+/* Individual key */
+.dtmf-key {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 14px 8px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.1s, border-color 0.1s, transform 0.08s;
+  -webkit-tap-highlight-color: transparent;
+  /* Ensure minimum 44px touch target height */
+  min-height: 60px;
+}
+.dtmf-key:hover {
+  background: var(--bg-inset);
+  border-color: var(--border);
+}
+.dtmf-key:active,
+.dtmf-key--active {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  transform: scale(0.94);
+}
+.dtmf-key-digit {
+  font-family: var(--font-body);
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--fg);
+  line-height: 1;
+}
+.dtmf-key-sub {
+  font-family: var(--font-body);
+  font-size: 8px;
+  font-weight: 500;
+  color: var(--fg-tertiary);
+  letter-spacing: 0.08em;
+  line-height: 1;
+}
+
+/* Hint text at the bottom */
+.dtmf-hint {
+  font-size: 11px;
+  color: var(--fg-tertiary);
+  text-align: center;
+  line-height: 1.4;
+  padding-top: 4px;
+}
+
+/* Mobile adjustments */
+@media (max-width: 400px) {
+  .dtmf-card {
+    padding: 16px;
+    border-radius: 12px 12px 0 0;
+    max-width: 100%;
+    /* Slide up from bottom on small phones */
+    margin-bottom: 0;
+    align-self: flex-end;
+  }
+  .dtmf-overlay {
+    align-items: flex-end;
+    padding: 0;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .dtmf-key {
+    min-height: 54px;
+    padding: 10px 6px;
+  }
+  .dtmf-key-digit { font-size: 20px; }
+}
+
+
