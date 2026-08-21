@@ -52,6 +52,9 @@ import { useTranslationRouting } from "./useTranslationRouting";
 import LanguagePill from "./LanguagePill";
 import CaptionsSidebar from "./CaptionsSidebar";
 import SettingsMenu from "./SettingsMenu";
+import InvitePhoneModal from "./InvitePhoneModal";
+import ParticipantsPanel from "./ParticipantsPanel";
+import PhoneParticipantTile from "./PhoneParticipantTile";
 import { useBackgroundEffect } from "./useBackgroundEffect";
 import { useIdleTimer } from "./useIdleTimer";
 import { useUser } from "@clerk/nextjs";
@@ -166,6 +169,9 @@ function RoomContent({
   peerLangs,
   isHost,
   onEnd,
+  roomName,
+  participantsOpen,
+  setParticipantsOpen,
 }: {
   lang: string;
   setLang: (l: string) => void;
@@ -177,8 +183,39 @@ function RoomContent({
   isHost: boolean;
   /** Called to end/leave the call (host: deletes room; guest: disconnects) */
   onEnd: () => void;
+  /** The LiveKit room name — needed for SIP invite and participant kick APIs */
+  roomName: string;
+  participantsOpen: boolean;
+  setParticipantsOpen: (v: boolean) => void;
 }) {
   const layoutContext = useCreateLayoutContext();
+
+  // ── Phone invite modal ─────────────────────────────────────────────────
+  const [phoneModalOpen, setPhoneModalOpen] = useState(false);
+
+  // ── Host passcode (SIP trunk) status ─────────────────────────────────────
+  // Fetched once on mount. When false, the "Call in" button is visible but
+  // disabled with a tooltip directing the host to configure their passcode.
+  const [hasTrunk, setHasTrunk] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    if (!isHost) return;
+    fetch("/api/user/sip-trunk")
+      .then((r) => r.json())
+      .then((data: { configured?: boolean }) => {
+        setHasTrunk(data.configured ?? false);
+      })
+      .catch(() => {
+        // On network error, assume not configured (safe default — button disabled)
+        setHasTrunk(false);
+      });
+  }, [isHost]);
+
+  // Called by SettingsMenu after the host saves a valid passcode.
+  // Immediately enables the Call-in button without requiring a page reload.
+  const handleTrunkSaved = useCallback(() => {
+    setHasTrunk(true);
+  }, []);
 
   // ── Mic permission prompt — shown once on join ───────────────────────────
   // Instead of a confusing "you're muted" nudge, we show a one-time modal
@@ -186,6 +223,7 @@ function RoomContent({
   // "Turn on mic" → triggers browser permission prompt + publishes track.
   // "Stay muted"  → dismisses; user can still toggle via ControlBar anytime.
   const { localParticipant } = useLocalParticipant();
+  const allRemotes = useRemoteParticipants();
   const [micPromptDone, setMicPromptDone] = useState(false);
   const showMicPrompt = !micPromptDone;
 
@@ -214,9 +252,23 @@ function RoomContent({
     { onlySubscribed: false },
   );
 
+  // Filter out AGENT (AI translator) and SIP (phone) from the camera grid.
+  // SIP participants never have a camera; passing them through causes
+  // ParticipantTile to render a permanent "muted" placeholder.
+  // We render them separately with <PhoneParticipantTile>.
   const tracks = useMemo(
-    () => allTracks.filter((t) => t.participant.kind !== ParticipantKind.AGENT),
+    () => allTracks.filter(
+      (t) =>
+        t.participant.kind !== ParticipantKind.AGENT &&
+        t.participant.kind !== ParticipantKind.SIP,
+    ),
     [allTracks],
+  );
+
+  // Separate list of SIP participants for custom rendering
+  const sipParticipants = useMemo(
+    () => allRemotes.filter((p) => p.kind === ParticipantKind.SIP),
+    [allRemotes],
   );
 
   // ── Stable grid layout ───────────────────────────────────────────────────
@@ -357,6 +409,47 @@ function RoomContent({
 
           <div className="chrome-actions">
             <ShareButton />
+
+            {/* ── Phone invite button (host only) ──────────────────────── */}
+            {isHost && (
+              <button
+                className={`chrome-icon-btn${hasTrunk === false ? " chrome-icon-btn--disabled" : ""}`}
+                onClick={() => hasTrunk && setPhoneModalOpen(true)}
+                disabled={hasTrunk !== true}
+                title={
+                  hasTrunk === null
+                    ? "Checking passcode…"
+                    : hasTrunk
+                    ? "Invite by phone"
+                    : "Configure your passcode in Settings to enable phone calls"
+                }
+                aria-disabled={hasTrunk !== true}
+              >
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden>
+                  <path
+                    d="M6.62 10.79a15.053 15.053 0 0 0 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1C10.61 21 3 13.39 3 4c0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"
+                    fill="currentColor"
+                  />
+                </svg>
+                <span className="chrome-icon-btn-label">Call in</span>
+              </button>
+            )}
+
+            {/* ── Participants panel button ─────────────────────────────── */}
+            <button
+              className={`chrome-icon-btn${participantsOpen ? " chrome-icon-btn--active" : ""}`}
+              onClick={() => setParticipantsOpen(!participantsOpen)}
+              title={participantsOpen ? "Hide participants" : "Show participants"}
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden>
+                <circle cx="9" cy="7" r="4" stroke="currentColor" strokeWidth="1.6" />
+                <path d="M3 21v-1a6 6 0 0 1 12 0v1" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                <path d="M16 11a4 4 0 1 1 0-8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                <path d="M21 21v-1a6 6 0 0 0-5-5.92" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+              </svg>
+              <span className="chrome-icon-btn-label">People</span>
+            </button>
+
             <button
               className={`chrome-icon-btn${captionsOpen ? " chrome-icon-btn--active" : ""}`}
               onClick={() => setCaptionsOpen(!captionsOpen)}
@@ -399,6 +492,21 @@ function RoomContent({
               <GridLayout tracks={stableTracks as any}>
                 <ParticipantTile />
               </GridLayout>
+              {/* Phone (SIP) participants — rendered below the grid with a
+                  custom tile that has no camera/mute UI. Audio is already
+                  handled globally by <RoomAudioRenderer />. */}
+              {sipParticipants.length > 0 && (
+                <div className="ppt-row">
+                  {sipParticipants.map((p) => (
+                    <PhoneParticipantTile
+                      key={p.identity}
+                      participant={p}
+                      isHost={isHost}
+                      localParticipant={localParticipant}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           )}
 
@@ -460,9 +568,19 @@ function RoomContent({
                 bgEffect={bgEffect}
                 onBgEffect={setBgEffect}
                 bgSupported={bgSupported}
+                isHost={isHost}
+                onTrunkSaved={handleTrunkSaved}
               />
             </div>
           </div>
+        )}
+
+        {/* ── Phone invite modal (host only) ────────────────────────────── */}
+        {phoneModalOpen && (
+          <InvitePhoneModal
+            roomName={roomName}
+            onClose={() => setPhoneModalOpen(false)}
+          />
         )}
 
       </div>
@@ -605,6 +723,9 @@ export default function InCall({
     return map;
   }, [humanRemotes]);
 
+  // ── Participants panel state — lives here so it survives RoomContent re-renders
+  const [participantsPanelOpen, setParticipantsPanelOpen] = useState(false);
+
   return (
     <div className={`room-shell${captionsOpen ? " room-shell--captions-open" : ""}`}>
       <RoomContent
@@ -616,8 +737,21 @@ export default function InCall({
         peerLangs={peerLangs}
         isHost={isHost}
         onEnd={idleEnd}
+        roomName={room.name}
+        participantsOpen={participantsPanelOpen}
+        setParticipantsOpen={setParticipantsPanelOpen}
       />
       <RoomAudioRenderer />
+
+      {/* ── Participants panel — slide-in from right, z-index above video ── */}
+      <ParticipantsPanel
+        open={participantsPanelOpen}
+        onClose={() => setParticipantsPanelOpen(false)}
+        localParticipant={localParticipant}
+        remoteParticipants={remotes}
+        isHost={isHost}
+        roomName={room.name}
+      />
 
       {/* ── Idle session timeout modal ──────────────────────────────────── */}
       {idleWarning && (

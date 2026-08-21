@@ -5,6 +5,7 @@
  * Rendered inside the LK `lk-settings-menu-modal` div (dark bg from LK theme).
  * All text colors use --lk-* CSS vars so they read well on #111 background.
  */
+import { useState, useCallback } from "react";
 import { Track } from "livekit-client";
 import { MediaDeviceMenu, TrackToggle } from "@livekit/components-react";
 import { getLanguageByCode } from "@/lib/languages";
@@ -18,7 +19,13 @@ interface SettingsMenuProps {
   bgEffect: BgEffect;
   onBgEffect: (e: BgEffect) => void;
   bgSupported: boolean | null;
+  isHost?: boolean;
+  /** Called after the host successfully verifies+saves their passcode */
+  onTrunkSaved?: () => void;
 }
+
+// ── Passcode verification state ───────────────────────────────────────────────
+type VerifyState = "idle" | "verifying" | "valid" | "invalid" | "error";
 
 export default function SettingsMenu({
   lang,
@@ -28,8 +35,76 @@ export default function SettingsMenu({
   bgEffect,
   onBgEffect,
   bgSupported,
+  isHost = false,
+  onTrunkSaved,
 }: SettingsMenuProps) {
   const langInfo = getLanguageByCode(lang);
+
+  // ── Passcode section state ─────────────────────────────────────────────────
+  const [passcode, setPasscode]         = useState("");
+  const [verifyState, setVerifyState]   = useState<VerifyState>("idle");
+  const [verifyMessage, setVerifyMessage] = useState("");
+  const [isSaving, setIsSaving]         = useState(false);
+
+  const handleVerifyAndSave = useCallback(async () => {
+    const trimmed = passcode.trim();
+    if (!trimmed) return;
+
+    setVerifyState("verifying");
+    setVerifyMessage("");
+
+    try {
+      // Step 1: validate the trunk ID exists
+      const verifyRes = await fetch("/api/user/verify-sip-trunk", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ trunkId: trimmed }),
+      });
+      const verifyData = await verifyRes.json();
+
+      if (!verifyRes.ok) {
+        setVerifyState("error");
+        setVerifyMessage("Verification failed — please try again.");
+        return;
+      }
+
+      if (!verifyData.valid) {
+        setVerifyState("invalid");
+        setVerifyMessage("Invalid passcode. Please check it or contact team@mednaath.com.");
+        return;
+      }
+
+      // Step 2: save to Clerk privateMetadata
+      setIsSaving(true);
+      const saveRes = await fetch("/api/user/sip-trunk", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ trunkId: trimmed }),
+      });
+      setIsSaving(false);
+
+      if (!saveRes.ok) {
+        setVerifyState("error");
+        setVerifyMessage("Passcode verified but failed to save — please try again.");
+        return;
+      }
+
+      setVerifyState("valid");
+      setVerifyMessage(
+        verifyData.name
+          ? `✓ Passcode saved. Trunk: ${verifyData.name}`
+          : "✓ Passcode verified and saved.",
+      );
+      setPasscode(""); // clear the input after successful save
+      onTrunkSaved?.(); // notify parent so hasTrunk re-fetches
+    } catch {
+      setIsSaving(false);
+      setVerifyState("error");
+      setVerifyMessage("Network error — please check your connection.");
+    }
+  }, [passcode]);
+
+  const isVerifying = verifyState === "verifying" || isSaving;
 
   return (
     <div className="settings-menu">
@@ -84,6 +159,78 @@ export default function SettingsMenu({
           </div>
         )}
       </div>
+
+      {/* ── Phone Calls (host only) ──────────────────────────────────────── */}
+      {isHost && (
+        <div className="settings-section">
+          <h3 className="settings-section-title">Phone Calls</h3>
+
+          <p className="settings-passcode-desc">
+            Enter your passcode to enable calling phone numbers into this room.
+          </p>
+
+          <div className="settings-passcode-row">
+            <input
+              type="password"
+              className="settings-passcode-input"
+              placeholder="Your passcode"
+              value={passcode}
+              onChange={(e) => {
+                setPasscode(e.target.value);
+                // reset status when user starts typing again
+                if (verifyState !== "idle") {
+                  setVerifyState("idle");
+                  setVerifyMessage("");
+                }
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && passcode.trim() && !isVerifying) {
+                  handleVerifyAndSave();
+                }
+              }}
+              disabled={isVerifying}
+              aria-label="Phone call passcode"
+              autoComplete="off"
+              spellCheck={false}
+            />
+            <button
+              className={`settings-passcode-btn${isVerifying ? " settings-passcode-btn--loading" : ""}`}
+              onClick={handleVerifyAndSave}
+              disabled={!passcode.trim() || isVerifying}
+            >
+              {isVerifying ? "Saving…" : "Verify & Save"}
+            </button>
+          </div>
+
+          {/* Status message */}
+          {verifyMessage && (
+            <p
+              className={`settings-passcode-status${
+                verifyState === "valid"
+                  ? " settings-passcode-status--ok"
+                  : verifyState === "invalid" || verifyState === "error"
+                  ? " settings-passcode-status--err"
+                  : ""
+              }`}
+            >
+              {verifyMessage}
+            </p>
+          )}
+
+          {/* Contact link — shown when not yet verified or on invalid */}
+          {(verifyState === "idle" || verifyState === "invalid") && (
+            <p className="settings-passcode-contact">
+              Don&apos;t have a passcode?{" "}
+              <a
+                href="mailto:team@mednaath.com"
+                className="settings-passcode-link"
+              >
+                Contact team@mednaath.com
+              </a>
+            </p>
+          )}
+        </div>
+      )}
 
       {/* ── Background effects ───────────────────────────────────────────── */}
       <div className="settings-section">
