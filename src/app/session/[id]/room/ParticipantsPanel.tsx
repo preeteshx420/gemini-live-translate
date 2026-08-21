@@ -440,7 +440,7 @@ export default function ParticipantsPanel({
                   key={p.identity}
                   participant={p}
                   identity={p.identity}
-                  name={p.name || p.identity}
+                  name={p.name ?? ""}
                   isSip={false}
                   isSelf={false}
                   isHost={isHost}
@@ -463,7 +463,7 @@ export default function ParticipantsPanel({
                   key={p.identity}
                   participant={p}
                   identity={p.identity}
-                  name={p.name || p.identity}
+                  name={p.name ?? ""}
                   isSip={true}
                   isSelf={false}
                   isHost={isHost}
