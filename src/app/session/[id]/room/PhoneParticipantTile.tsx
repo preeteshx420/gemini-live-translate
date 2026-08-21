@@ -42,7 +42,7 @@ export default function PhoneParticipantTile({
   // Fall-back chain: p.name → strip "sip_" prefix from identity → raw identity.
   // Also strip any legacy "📞 " prefix from names set before the emoji removal fix.
   const displayName = (
-    participant.name.trim() ||
+    participant.name?.trim() ||
     participant.identity.replace(/^sip_/i, "")
   ).replace(/^📞\s*/, "").trim() || participant.identity;
 
