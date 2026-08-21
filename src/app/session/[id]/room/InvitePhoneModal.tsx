@@ -225,7 +225,7 @@ export default function InvitePhoneModal({
                 ))}
               </select>
 
-              {/* Remove row button (only show when >1 row) */
+              {/* Remove row button (only show when >1 row) */}
               {entries.length > 1 && (
                 <button
                   className="ipm-remove-row"
