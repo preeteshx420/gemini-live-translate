@@ -999,6 +999,7 @@ input.select-field {
 .chrome-icon-btn--disabled {
   opacity: 0.42;
   cursor: not-allowed;
+  pointer-events: none; /* prevents accidental tap on iOS */
 }
 .chrome-icon-btn--disabled:hover {
   background: transparent;
@@ -1737,6 +1738,10 @@ input.select-field {
     max-height: 90vh;
     border-bottom-left-radius: 0 !important;
     border-bottom-right-radius: 0 !important;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    /* Push up when soft keyboard opens so input stays in view */
+    padding-bottom: env(safe-area-inset-bottom, 0px);
   }
   /* Background effect: 2 columns on small screens */
   .settings-bg-grid { grid-template-columns: repeat(2, 1fr); }
@@ -2665,11 +2670,14 @@ input.select-field {
   border: none;
   color: var(--fg-tertiary);
   cursor: pointer;
-  padding: 4px;
+  /* 44px touch target — transparent padding expands hit area without visual size change */
+  padding: 10px;
+  margin: -6px;
   display: flex;
   align-items: center;
   border-radius: 4px;
   transition: color 0.15s, background 0.15s;
+  -webkit-tap-highlight-color: transparent;
 }
 .pp-close:hover {
   color: var(--fg);
@@ -2874,16 +2882,22 @@ input.select-field {
     flex-wrap: wrap;
     gap: 6px;
     padding: 10px 14px;
+    /* Give each row enough height for controls to breathe */
+    min-height: 54px;
   }
   /* Info takes full width so controls sit below on their own row */
-  .pp-info { flex-basis: calc(100% - 38px); }
+  .pp-info { flex-basis: calc(100% - 38px); min-width: 0; }
   .pp-controls {
     /* Full-width second line under the participant name */
     flex-basis: 100%;
     margin-left: 38px;    /* align with name (avatar width 28px + gap 10px) */
     flex-wrap: wrap;
     gap: 6px;
+    /* Allow controls to use the full available width */
+    width: calc(100% - 38px);
   }
+  /* Name: always shows, ellipsis when truncated */
+  .pp-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -2985,13 +2999,13 @@ input.select-field {
    hide text labels — show icon-only buttons to prevent horizontal overflow.
    Also increase min-height to 44px for comfortable touch targets. */
 @media (max-width: 640px) {
-  .pp-mute-label        { display: none; }
-  .pp-action-label      { display: none; }
+  .pp-mute-label         { display: none; }
+  .pp-action-label       { display: none; }
   .pp-panel-keypad-label { display: none; }
-  /* Enlarge tap targets on touch devices */
-  .pp-mute-btn          { min-height: 44px; min-width: 44px; padding: 0; }
-  .pp-action-btn        { min-height: 44px; padding: 0 12px; }
-  .pp-panel-keypad-btn  { min-height: 44px; min-width: 44px; padding: 0; }
+  /* 44px touch targets — icon-only, square buttons */
+  .pp-mute-btn           { min-height: 44px; min-width: 44px; padding: 0; justify-content: center; }
+  .pp-action-btn         { min-height: 44px; min-width: 44px; padding: 0; justify-content: center; }
+  .pp-panel-keypad-btn   { min-height: 44px; min-width: 44px; padding: 0; justify-content: center; }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -3097,7 +3111,11 @@ input.select-field {
     flex: 1 1 100%;    /* full-width stacked on narrow screens */
     max-width: 100%;
     padding: 10px 12px;
+    min-height: 64px;  /* comfortable tap area height */
   }
+  /* Bigger avatar on mobile for easier identification */
+  .ppt-avatar { width: 44px; height: 44px; }
+  .ppt-name   { font-size: 14px; }
 }
 
 /* ── PhoneParticipantTile keypad button ──────────────────────────────────── */
